@@ -74,25 +74,25 @@ const ShowMap = () => {
     return () => mapRef.current.remove();
   }, []);
 
-  const fetchAgriculturalData = async (polygonCoordinates) => {
-    try {
-      const response = await axios.post(
-        "https://api.agromonitoring.com/agro/1.0/ndvi/history", // Endpoint for NDVI (vegetation index) data, can be changed based on your need
-        {
-          polygon: polygonCoordinates, // The drawn polygon (GeoJSON format)
-          start: "2025-01-01", // Start date
-          end: "2025-01-31", // End date
-          apiKey: process.env.NEXT_PUBLIC_AGRO_ACCESS_TOKEN, 
-        }
-      );
+  // const fetchAgriculturalData = async (polygonCoordinates) => {
+  //   try {
+  //     const response = await axios.post(
+  //       "https://api.agromonitoring.com/agro/1.0/ndvi/history", // Endpoint for NDVI (vegetation index) data, can be changed based on your need
+  //       {
+  //         polygon: polygonCoordinates, // The drawn polygon (GeoJSON format)
+  //         start: "2025-01-01", // Start date
+  //         end: "2025-01-31", // End date
+  //         apiKey: process.env.NEXT_PUBLIC_AGRO_ACCESS_TOKEN, 
+  //       }
+  //     );
 
-      setAgriculturalData(response.data); // Store the fetched data in state
-      console.log(response.data); // This will contain NDVI data or other agricultural features
+  //     setAgriculturalData(response.data); // Store the fetched data in state
+  //     console.log(response.data); // This will contain NDVI data or other agricultural features
 
-    } catch (error) {
-      console.error("Error fetching agricultural data:", error);
-    }
-  };
+  //   } catch (error) {
+  //     console.error("Error fetching agricultural data:", error);
+  //   }
+  // };
   return (
     <Box
     ref={mapContainerRef}
