@@ -3,11 +3,14 @@ import React from "react";
 import { Box, Button, Container, Grid, TextField, Typography, Paper } from "@mui/material";
 import AppleIcon from "@mui/icons-material/Apple";
 import GoogleIcon from "@mui/icons-material/Google";
-import StyledTextField from "@/components/StyledTextField";
+import StyledTextField from "@/app/components/StyledTextField";
+import { useRouter } from "next/navigation";
 
 
 
 const SignupPage = () => {
+  const router = useRouter();
+
   return (
     <Grid container sx={{ height: "100vh" }}>
       {/* Left Side - Background Image */}
@@ -57,6 +60,7 @@ const SignupPage = () => {
             </Typography>
             
             <Button
+            onClick={() => router.push("/map")}
   fullWidth
   variant="contained"
   sx={{
