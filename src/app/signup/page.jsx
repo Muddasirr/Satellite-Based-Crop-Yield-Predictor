@@ -3,11 +3,14 @@ import React from "react";
 import { Box, Button, Container, Grid, TextField, Typography, Paper } from "@mui/material";
 import AppleIcon from "@mui/icons-material/Apple";
 import GoogleIcon from "@mui/icons-material/Google";
-import StyledTextField from "@/components/StyledTextField";
+import StyledTextField from "@/app/components/StyledTextField";
+import { useRouter } from "next/navigation";
 
 
 
-const SignupPage = () => {
+const SignIn = () => {
+  const router = useRouter();
+
   return (
     <Grid container sx={{ height: "100vh" }}>
       {/* Left Side - Background Image */}
@@ -47,16 +50,16 @@ const SignupPage = () => {
           </Box>
           
           <Box component="form" noValidate>
-            <StyledTextField fullWidth margin="normal" label="First Name" variant="outlined" />
-            <StyledTextField fullWidth margin="normal" label="Last Name" variant="outlined" />
-            <StyledTextField fullWidth margin="normal" label="Email Address" variant="outlined" />
-            <StyledTextField fullWidth margin="normal" label="Password (8+ Characters)" type="password" variant="outlined" />
+            
+            <TextField fullWidth margin="normal" label="Email Address" variant="outlined" />
+            <TextField fullWidth margin="normal" label="Password" type="password" variant="outlined" />
             
             <Typography variant="body2" color="textSecondary" sx={{  textAlign: "center" }}>
               By continuing, you agree to Fairm’s <a href="#" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>Terms & Conditions</a> and <a href="#" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>Privacy Policy</a>
             </Typography>
             
             <Button
+            onClick={() => router.push("/map")}
   fullWidth
   variant="contained"
   sx={{
@@ -81,4 +84,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default SignIn;
