@@ -43,7 +43,7 @@ const ShowMap = () => {
       console.log(drawnPolygon.geometry.coordinates); // Polygon coordinates in GeoJSON format
 
       // Fetch agricultural data for the selected region
-      await fetchAgriculturalData(drawnPolygon.geometry.coordinates);
+      
     });
   
 
