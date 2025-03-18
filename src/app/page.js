@@ -5,5 +5,4 @@ export default function Home() {
     <div >
      <Login/>
     </div>
-  );
-}
+  )}
