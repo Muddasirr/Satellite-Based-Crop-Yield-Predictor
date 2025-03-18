@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  }
+    "allowJs": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src/**/*"]
 }
