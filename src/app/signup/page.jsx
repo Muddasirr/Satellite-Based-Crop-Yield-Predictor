@@ -3,7 +3,6 @@ import React from "react";
 import { Box, Button, Container, Grid, TextField, Typography, Paper } from "@mui/material";
 import AppleIcon from "@mui/icons-material/Apple";
 import GoogleIcon from "@mui/icons-material/Google";
-import StyledTextField from "@/app/components/StyledTextField";
 import { useRouter } from "next/navigation";
 
 
