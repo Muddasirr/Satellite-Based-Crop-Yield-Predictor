@@ -4,6 +4,7 @@ import { Box, Button, Container, Grid, TextField, Typography, Paper } from "@mui
 import AppleIcon from "@mui/icons-material/Apple";
 import GoogleIcon from "@mui/icons-material/Google";
 import { useRouter } from "next/navigation";
+import StyledTextField from "../components/StyledTextField";
 
 
 
