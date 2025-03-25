@@ -7,13 +7,15 @@ import FieldManagement from '../components/FIeldManagament'
 const page = () => {
   return (
     <Box display={'flex'}>
-      <Box width={'5vw'}>
+      <Box width={'5%'}>
       <Sidebar/>
       </Box>
-      <Box width={'35vw'}>
+      <Box width={'45%'}>
       <FieldManagement/>
       </Box>
-      <ShowMap/></Box>
+      <Box width={'50%'}>
+      <ShowMap/>
+      </Box></Box>
   )
 }
 
