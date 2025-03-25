@@ -13,6 +13,7 @@ import {
   Fab,
 } from "@mui/material";
 import { ExpandMore, ExpandLess, Add, Sort } from "@mui/icons-material";
+import WeatherModal from "./WeatherModal";
 
 const fieldsData = [
   { id: 1, name: "Field 1", area: "811.4 ha", color: "red" },
@@ -20,6 +21,7 @@ const fieldsData = [
 ];
 
 const FieldManagement = () => {
+  const [open,setOpen] = useState(false);
   const [expanded, setExpanded] = useState(true);
   const [selectedFields, setSelectedFields] = useState([]);
   const [search, setSearch] = useState("");
@@ -37,9 +39,9 @@ const FieldManagement = () => {
   );
 
   return (
-    <Box sx={{ display: "flex", height: "100vh", bgcolor: "#f4f4f4" }}>
+    <Box width={'100%'} sx={{ display: "flex", height: "100vh", bgcolor: "#f4f4f4" }}>
       {/* Sidebar */}
-      <Box sx={{ maxWidth: "25vw", bgcolor: "white", p: 2, boxShadow: 1 }}>
+      <Box sx={{ width: "45%", bgcolor: "white", p: 2, boxShadow: 1 }}>
         <Typography variant="h6" fontWeight="bold">
           FF
         </Typography>
@@ -59,7 +61,7 @@ const FieldManagement = () => {
       </Box>
 
       {/* Main Content */}
-      <Box width={'75vw'} sx={{ flex: 1, bgcolor: "white", boxShadow: 1,p:2 }}>
+      <Box width={'55%'} sx={{ flex: 1, bgcolor: "white", boxShadow: 1,p:2 }}>
         <Typography variant="h6" fontWeight="bold">
           Season 2024
         </Typography>
@@ -107,7 +109,7 @@ const FieldManagement = () => {
           {expanded && (
             <List>
               {filteredFields.map((field) => (
-                <ListItem key={field.id} sx={{ p: 1 }}>
+                <ListItem onClick={()=> setOpen(true)} key={field.id} sx={{ p: 1 }}>
                   <ListItemIcon>
                     <Box
                       sx={{
@@ -144,6 +146,7 @@ const FieldManagement = () => {
       >
         <Add />
       </Fab>
+      <WeatherModal open={open} handleClose={setOpen}/>
     </Box>
   );
 };
