@@ -90,7 +90,6 @@ const NotesMap = () => {
         setOpenNoteModal(true);
         setIsAddingNote(false);
 
-        // Add marker at the clicked location
         new mapboxgl.Marker()
           .setLngLat([clickedLngLat.lng, clickedLngLat.lat])
           .addTo(mapRef.current);
@@ -150,14 +149,14 @@ const NotesMap = () => {
 
   const handleStartAddingNote = () => {
     setIsAddingNote(true);
-    // Change cursor to pointer (indicating the user can click on the map)
+
     mapContainerRef.current.style.cursor = 'crosshair';
   };
 
   const handleCancelAddingNote = () => {
     setIsAddingNote(false);
     if (mapContainerRef.current) {
-      mapContainerRef.current.style.cursor = ''; // Reset to default
+      mapContainerRef.current.style.cursor = ''; 
     }
   };
 
@@ -184,7 +183,7 @@ const NotesMap = () => {
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
-      {/* Notes Panel (Left Sidebar) */}
+
       <Box sx={{ 
         width: "350px", 
         borderRight: "1px solid #e0e0e0",
@@ -256,7 +255,7 @@ const NotesMap = () => {
         )}
       </Box>
 
-      {/* Note Modal */}
+
       <Modal 
         open={openNoteModal} 
         onClose={() => setOpenNoteModal(false)}
