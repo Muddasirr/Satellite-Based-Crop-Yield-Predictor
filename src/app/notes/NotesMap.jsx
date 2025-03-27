@@ -37,6 +37,7 @@ const NotesMap = () => {
     comment: "",
     image: null
   });
+  const [isAddingNote, setIsAddingNote] = useState(false);
 
   const noteTypes = [
     "Pest",
@@ -80,11 +81,23 @@ const NotesMap = () => {
     mapRef.current = map;
 
     const handleMapClick = (e) => {
-      setNewNote({
-        lng: e.lngLat.lng,
-        lat: e.lngLat.lat
-      });
-      setOpenNoteModal(true);
+      if (isAddingNote) {
+        const clickedLngLat = e.lngLat;
+        setNewNote({
+          lng: clickedLngLat.lng,
+          lat: clickedLngLat.lat
+        });
+        setOpenNoteModal(true);
+        setIsAddingNote(false);
+
+        // Add marker at the clicked location
+        new mapboxgl.Marker()
+          .setLngLat([clickedLngLat.lng, clickedLngLat.lat])
+          .addTo(mapRef.current);
+
+        // Reset cursor to default
+        mapContainerRef.current.style.cursor = '';
+      }
     };
 
     map.on("click", handleMapClick);
@@ -95,7 +108,7 @@ const NotesMap = () => {
       map.off("click", handleMapClick);
       map.remove();
     };
-  }, []);
+  }, [isAddingNote]);
 
   const loadNotes = () => {
     const mockNotes = [
@@ -129,14 +142,23 @@ const NotesMap = () => {
     document.querySelectorAll('.mapboxgl-marker').forEach(marker => marker.remove());
 
     notes.forEach(note => {
-      const el = document.createElement('div');
-      el.className = 'marker';
-      el.innerHTML = '<PlaceIcon style={{ color: "#ff4757", fontSize: 24 }} />';
-      
-      new mapboxgl.Marker(el)
+      new mapboxgl.Marker()
         .setLngLat([note.lng, note.lat])
         .addTo(mapRef.current);
     });
+  };
+
+  const handleStartAddingNote = () => {
+    setIsAddingNote(true);
+    // Change cursor to pointer (indicating the user can click on the map)
+    mapContainerRef.current.style.cursor = 'crosshair';
+  };
+
+  const handleCancelAddingNote = () => {
+    setIsAddingNote(false);
+    if (mapContainerRef.current) {
+      mapContainerRef.current.style.cursor = ''; // Reset to default
+    }
   };
 
   const handleSaveNote = () => {
@@ -173,7 +195,7 @@ const NotesMap = () => {
           <Divider sx={{ my: 2 }} />
           <List>
             {notes.length === 0 ? (
-              <Typography sx={{ p: 2 }}>No notes yet. Click on the map to add one.</Typography>
+              <Typography sx={{ p: 2 }}>No notes yet. Click "Add Note" and then click on the map.</Typography>
             ) : (
               notes.map((note) => (
                 <ListItem key={note.id} button>
@@ -209,15 +231,29 @@ const NotesMap = () => {
             position: "absolute",
             bottom: 32,
             right: 32,
-            backgroundColor: "#4CAF50",
+            backgroundColor: isAddingNote ? "#f44336" : "#4CAF50",
             "&:hover": {
-              backgroundColor: "#388E3C"
+              backgroundColor: isAddingNote ? "#d32f2f" : "#388E3C"
             }
           }}
-          onClick={() => setOpenNoteModal(true)}
+          onClick={isAddingNote ? handleCancelAddingNote : handleStartAddingNote}
         >
-          <AddIcon />
+          {isAddingNote ? <CloseIcon /> : <AddIcon />}
         </Fab>
+
+        {isAddingNote && (
+          <Box sx={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            backgroundColor: "rgba(0,0,0,0.7)",
+            color: "white",
+            padding: "8px 16px",
+            borderRadius: "4px"
+          }}>
+            <Typography>Click on map to place note</Typography>
+          </Box>
+        )}
       </Box>
 
       {/* Note Modal */}
