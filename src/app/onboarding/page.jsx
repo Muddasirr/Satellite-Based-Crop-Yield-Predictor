@@ -77,7 +77,7 @@ const OnboardingPage = () => {
               <Box component="img" src="/google.png" alt="Google logo" sx={{ width: 24, height: "auto" }} />
             </Button>
           </Box>
-
+          <a href="/signup">
           <Button
   fullWidth
   variant="outlined"
@@ -91,6 +91,7 @@ const OnboardingPage = () => {
   }
   sx={{
     py: 1.5,
+    link: "/signup",
     borderRadius: "8px",
     border: "2px solid #e4e7e6",
     color: "#000000", // Black color
@@ -101,29 +102,33 @@ const OnboardingPage = () => {
   }}
 >
   Continue with Email
+  
 </Button>
+</a>
 
-<Button
-  fullWidth
-  variant="outlined"
-  sx={{
-    py: 1.5,
-    borderRadius: "8px",
-    border: "2px solid #e4e7e6",
-    color: "#000000", // Black color
-    fontWeight: "bold", // Bold text
-    '&:hover': {
-      border: "2px solid #000000", // Black border on hover
-    }
-  }}
->
-  Continue with SSO
-</Button>
+<a href="/signup">
+  <Button
+    fullWidth
+    variant="outlined"
+    sx={{
+      py: 1.5,
+      borderRadius: "8px",
+      border: "2px solid #e4e7e6",
+      color: "#000000", // Black color
+      fontWeight: "bold", // Bold text
+      '&:hover': {
+        border: "2px solid #000000", // Black border on hover
+      }
+    }}
+  >
+    Continue with SSO
+  </Button>
+</a>
         </Box>
 
         <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
           Already have an account?{" "}
-          <Link href="/login" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
+          <Link href="/signin" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
             Log In
           </Link>
         </Typography>
