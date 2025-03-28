@@ -106,7 +106,7 @@ const SignupPage = () => {
                   border: "2px solid #e4e7e6",
                 }}
               >
-                <Box component="img" src="/apple.png" alt="Apple logo" sx={{ width: 24, height: "auto" }} />
+                <Box component="img" src="/apple.png" alt="Apple logo" sx={{ width: 40, height: "auto" }} />
               </Button>
 
               <Typography variant="body2" sx={{ textAlign: "center", fontWeight: "600" }}>
@@ -133,7 +133,7 @@ const SignupPage = () => {
             {/* Already have an account? Text */}
             <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
               Already have an account?{" "}
-              <a href="#" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
+              <a href="/signin" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
                 Log In
               </a>
             </Typography>
