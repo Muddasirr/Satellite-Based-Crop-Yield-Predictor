@@ -1,12 +1,17 @@
-'use client'
-import React from "react";
+import { useState } from "react";
 import { Box, Paper, IconButton } from "@mui/material";
-import { 
-  Calendar, SquaresFour, Smiley, MapPin, Upload, 
-  FileText, Trash, BookOpen, Phone, User 
-} from "@phosphor-icons/react";
+import { Calendar, SquaresFour, Smiley, MapPin, Upload, FileText, Trash, BookOpen, Phone, User, Cloud } from "@phosphor-icons/react";
+import WeatherModal from "./WeatherModal";  // Modal component
 
 const Sidebar = () => {
+  const [openWeather, setOpenWeather] = useState(false);
+
+  const handleWeatherClick = () => setOpenWeather(true);
+
+  const handlenotesclick = () => {
+    window.location.href = '/notes';
+  }
+
   return (
     <Paper 
       elevation={3} 
@@ -42,20 +47,27 @@ const Sidebar = () => {
       <SidebarItem icon={<Calendar size={24} />} />
       <SidebarItem icon={<SquaresFour size={24} />} active />
       <SidebarItem icon={<Smiley size={24} />} />
-      <SidebarItem icon={<MapPin size={24} />} />
+      <SidebarItem icon={<MapPin size={24} />} onClick={handlenotesclick} />
       <SidebarItem icon={<Upload size={24} />} />
       <SidebarItem icon={<FileText size={24} />} />
       <SidebarItem icon={<Trash size={24} />} />
       <SidebarItem icon={<BookOpen size={24} />} />
       <SidebarItem icon={<Phone size={24} />} />
       <SidebarItem icon={<User size={24} />} />
+      {/* Weather Icon */}
+      <SidebarItem icon={<Cloud size={24} />} onClick={handleWeatherClick} />
+      
+      
+      {/* Weather Modal */}
+      <WeatherModal open={openWeather} handleClose={() => setOpenWeather(false)} />
     </Paper>
   );
 };
 
-const SidebarItem = ({ icon, active }) => {
+const SidebarItem = ({ icon, active, onClick }) => {
   return (
     <IconButton
+      onClick={onClick}
       sx={{
         padding: "10px",
         borderRadius: "8px",
