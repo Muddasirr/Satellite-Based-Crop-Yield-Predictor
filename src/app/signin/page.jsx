@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { Box, Button, Grid, TextField, Typography, Paper } from "@mui/material";
 import { useRouter } from "next/navigation";
+import StyledTextField from "../components/StyledTextField";
 
 const Login = () => {
   const router = useRouter();
@@ -17,7 +18,8 @@ const Login = () => {
     try {
       const response = await axios.post("/api/auth/signin", data);
       console.log("Login successful:", response.data);
-       router.push('/map');
+      router.push('/map');
+       
     } catch (error) {
       console.error("Login error:", error.response?.data || error.message);
     }
@@ -49,7 +51,7 @@ const Login = () => {
           </Box>
 
           <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
-            <TextField
+            <StyledTextField
               fullWidth
               margin="normal"
               label="Email Address"
@@ -59,7 +61,7 @@ const Login = () => {
               helperText={errors.email?.message}
             />
 
-            <TextField
+            <StyledTextField
               fullWidth
               margin="normal"
               label="Password (8+ Characters)"
