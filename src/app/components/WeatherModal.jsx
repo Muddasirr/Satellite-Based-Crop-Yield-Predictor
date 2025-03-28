@@ -7,16 +7,17 @@ import {
   Card,
   CardContent,
   IconButton,
+  Button,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import ThermostatIcon from "@mui/icons-material/Thermostat";
-import OpacityIcon from "@mui/icons-material/Opacity";
 import AirIcon from "@mui/icons-material/Air";
 import CloudQueueIcon from "@mui/icons-material/CloudQueue";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import WeatherTable from "./WeatherTable";
 import NDVIMap from "./MapModal";
+
 const WeatherModal = ({ open, handleClose }) => {
   const weatherData = [
     { time: "Now", temperature: 20, wind: 4, cloud: 2, humidity: 30, dew: 3 },
@@ -26,17 +27,15 @@ const WeatherModal = ({ open, handleClose }) => {
   ];
 
   return (
-    
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-        
+    <Dialog open={open} onClose={() => handleClose(false)} fullWidth maxWidth="md">
       <DialogContent>
-      <NDVIMap/>
         <Grid container justifyContent="space-between" alignItems="center">
           <Typography variant="h5">Weather</Typography>
-          <IconButton onClick={()=>handleClose(false)}>
+          <IconButton onClick={() => handleClose(false)}>
             <CloseIcon />
           </IconButton>
         </Grid>
+        <NDVIMap />
         <Typography variant="subtitle1">Field 1</Typography>
 
         <Grid container spacing={2} sx={{ mt: 2 }}>
@@ -47,7 +46,7 @@ const WeatherModal = ({ open, handleClose }) => {
             { label: "Humidity", dataKey: "humidity", unit: "%", icon: <WaterDropIcon /> },
             { label: "Dew point", dataKey: "dew", unit: "°C", icon: <ThermostatIcon /> },
           ].map((item, index) => (
-            <Grid item  xs={6} md={4} key={index}>
+            <Grid item xs={6} md={4} key={index}>
               <Card>
                 <CardContent>
                   <Grid container alignItems="center" spacing={1}>
@@ -72,7 +71,14 @@ const WeatherModal = ({ open, handleClose }) => {
             </Grid>
           ))}
         </Grid>
-        <WeatherTable/>
+        <WeatherTable />
+        
+        {/* Close Button */}
+        <Grid container justifyContent="flex-end" sx={{ mt: 2 }}>
+          <Button variant="contained" color="primary" onClick={() => handleClose(false)}>
+            Close
+          </Button>
+        </Grid>
       </DialogContent>
     </Dialog>
   );

@@ -1,31 +1,29 @@
 
-import { NextApiRequest, NextApiResponse } from 'next';
-import pool from "../../../../lib/db";
-
+import  {supabase} from '../../../../lib/supabase/client';
 export default async function handler(req, res) {
   if (req.method === 'POST') {
+   
+
     const { email, password } = req.body;
 
     try {
-     
-      const { rows } = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+      const { data, error } = await supabase
+        .from('Users')
+        .select()
+        .eq('email', email)
+        .eq('password', password) 
 
-      if (rows.length === 0) {
-        return res.status(401).json({ message: 'Invalid email or password' });
-      }
+      if (error) throw error;
 
-      const user = rows[0];
-
-     
-      if (user.password === password) {
-     
-        return res.status(200).json({ message: 'Login successful', user: { email, name: user.name, role: user.role } });
+      if (data.length > 0) {
+        res.status(200).json({ message: 'Login successful', user: data[0] });
       } else {
-        return res.status(401).json({ message: 'Invalid email or password' });
+        res.status(401).json({ message: 'Invalid email or password' });
       }
+
     } catch (error) {
       console.error('Error logging in:', error);
-      return res.status(500).json({ message: 'Internal Server Error' });
+      res.status(500).json({ message: 'Internal Server Error' });
     }
   } else {
     res.status(405).json({ message: 'Method Not Allowed' });
