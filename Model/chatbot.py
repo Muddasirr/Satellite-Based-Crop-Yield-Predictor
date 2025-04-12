@@ -14,7 +14,7 @@ def get_groq_client(question: str):
     completion = client.chat.completions.create(
         model="gemma2-9b-it",
         messages=[
-            {
+            {   
                 'role': 'system',
                 'content': 'You are a specialized agriculture chatbot who can answer any question related to agriculture.You politely refuse to answer any question that is not related to agriculture. Answer in simple manner without fancying the language.'
             },
