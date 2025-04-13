@@ -8,7 +8,6 @@ import {
   Grid, 
   LinearProgress, 
   IconButton,
-  Button,
   Card,
   Divider,
   Chip
@@ -26,13 +25,6 @@ import {
   Legend
 } from "recharts";
 import CloseIcon from "@mui/icons-material/Close";
-import ThermostatIcon from "@mui/icons-material/Thermostat";
-import AirIcon from "@mui/icons-material/Air";
-import CloudQueueIcon from "@mui/icons-material/CloudQueue";
-import WaterDropIcon from "@mui/icons-material/WaterDrop";
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
-import WeatherTable from "./WeatherTable";
-import NDVIMap from "./MapModal";
 import SearchIcon from "@mui/icons-material/Search";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import WaterDropIcon from "@mui/icons-material/WaterDrop";
@@ -102,7 +94,7 @@ const WeatherDetailCard = styled(Box)({
 
 const WeatherModal = ({ open, handleClose }) => {
   const [weatherData, setWeatherData] = useState(null);
-  const [location, setLocation] = useState("Tegal, Indonesia");
+  const [location, setLocation] = useState("Karachi, Pakistan");
   const [loading, setLoading] = useState(false);
   const [chartData, setChartData] = useState([]);
   const [error, setError] = useState(null);
@@ -167,36 +159,6 @@ const WeatherModal = ({ open, handleClose }) => {
   };
 
   return (
-    <Dialog open={open} onClose={() => handleClose(false)} fullWidth maxWidth="md">
-      <DialogContent>
-        <Grid container justifyContent="space-between" alignItems="center">
-          <Typography variant="h5">Weather</Typography>
-          <IconButton onClick={() => handleClose(false)}>
-            <CloseIcon />
-          </IconButton>
-        </Grid>
-        <NDVIMap />
-        <Typography variant="subtitle1">Field 1</Typography>
-
-        <Grid container spacing={2} sx={{ mt: 2 }}>
-          {[
-            { label: "Temperature", dataKey: "temperature", unit: "°C", icon: <ThermostatIcon /> },
-            { label: "Wind", dataKey: "wind", unit: "m/s", icon: <AirIcon /> },
-            { label: "Cloud cover", dataKey: "cloud", unit: "%", icon: <CloudQueueIcon /> },
-            { label: "Humidity", dataKey: "humidity", unit: "%", icon: <WaterDropIcon /> },
-            { label: "Dew point", dataKey: "dew", unit: "°C", icon: <ThermostatIcon /> },
-          ].map((item, index) => (
-            <Grid item xs={6} md={4} key={index}>
-              <Card>
-                <CardContent>
-                  <Grid container alignItems="center" spacing={1}>
-                    <Grid item>{item.icon}</Grid>
-                    <Grid item>
-                      <Typography variant="body2">{item.label}</Typography>
-                      <Typography variant="h6">
-                        {weatherData[0][item.dataKey]}{item.unit}
-                      </Typography>
-                    </Grid>
     <Dialog 
       open={open} 
       onClose={handleClose} 
@@ -402,19 +364,6 @@ const WeatherModal = ({ open, handleClose }) => {
                       />
                     </LineChart>
                   </ResponsiveContainer>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-        <WeatherTable />
-        
-        {/* Close Button */}
-        <Grid container justifyContent="flex-end" sx={{ mt: 2 }}>
-          <Button variant="contained" color="primary" onClick={() => handleClose(false)}>
-            Close
-          </Button>
-        </Grid>
                 </Box>
 
                 {/* Humidity Chart */}
