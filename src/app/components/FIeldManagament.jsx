@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -13,7 +13,11 @@ import {
   Fab,
 } from "@mui/material";
 import { ExpandMore, ExpandLess, Add, Sort } from "@mui/icons-material";
-import WeatherModal from "./WeatherModal";
+import axios from 'axios';
+
+
+
+
 
 const fieldsData = [
   { id: 1, name: "Field 1", area: "811.4 ha", color: "red" },
@@ -21,12 +25,24 @@ const fieldsData = [
 ];
 
 const FieldManagement = () => {
-  const [open,setOpen] = useState(false);
+
+  const [fields, setFields] = useState([]);
+
   const [expanded, setExpanded] = useState(true);
   const [selectedFields, setSelectedFields] = useState([]);
   const [search, setSearch] = useState("");
+  
+  
+  
+  useEffect(() => {
+    getfields();
+  },[])
 
-  const toggleExpand = () => setExpanded(!expanded);
+  const getfields = async () => {
+    const response = await axios.get('/api/fields/getfield');
+   setFields(response.data.field)
+  }
+   const toggleExpand = () => setExpanded(!expanded);
 
   const handleSelect = (id) => {
     setSelectedFields((prev) =>
@@ -34,7 +50,7 @@ const FieldManagement = () => {
     );
   };
 
-  const filteredFields = fieldsData.filter((field) =>
+  const filteredFields = fields?.filter((field) =>
     field.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -61,7 +77,7 @@ const FieldManagement = () => {
       </Box>
 
       {/* Main Content */}
-      <Box width={'55%'} sx={{ flex: 1, bgcolor: "white", boxShadow: 1,p:2 }}>
+      <Box width={'55%'} sx={{ flex: 1, bgcolor: "white", boxShadow: 1, p: 2 }}>
         <Typography variant="h6" fontWeight="bold">
           Season 2024
         </Typography>
@@ -108,22 +124,22 @@ const FieldManagement = () => {
 
           {expanded && (
             <List>
-              {filteredFields.map((field) => (
-                <ListItem onClick={()=> setOpen(true)} key={field.id} sx={{ p: 1 }}>
+              {filteredFields.map((field, index) => (
+                <ListItem key={index}>
                   <ListItemIcon>
                     <Box
                       sx={{
                         width: 30,
                         height: 30,
                         borderRadius: "4px",
-                        bgcolor: field.color,
+                        bgcolor: 'green',
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
                       }}
                     />
                   </ListItemIcon>
-                  <ListItemText primary={field.name} secondary={field.area} />
+                  <ListItemText primary={field.name} secondary={"Area:\n" + field.area + "\nha"} />
                   <Checkbox
                     checked={selectedFields.includes(field.id)}
                     onChange={() => handleSelect(field.id)}
@@ -136,17 +152,8 @@ const FieldManagement = () => {
       </Box>
 
       {/* Floating Action Button */}
-      <Fab
-        color="success"
-        sx={{
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-        }}
-      >
-        <Add />
-      </Fab>
-      <WeatherModal open={open} handleClose={setOpen}/>
+
+
     </Box>
   );
 };
