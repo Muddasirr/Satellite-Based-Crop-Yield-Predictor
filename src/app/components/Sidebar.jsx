@@ -2,14 +2,15 @@ import { useState } from "react";
 import { Box, Paper, IconButton } from "@mui/material";
 import { Calendar, SquaresFour, Smiley, MapPin, Upload, FileText, Trash, BookOpen, Phone, User, Cloud } from "@phosphor-icons/react";
 import WeatherModal from "./WeatherModal";  // Modal component
-
+import { useRouter } from "next/navigation";
 const Sidebar = () => {
+  const router = useRouter();
   const [openWeather, setOpenWeather] = useState(false);
 
   const handleWeatherClick = () => setOpenWeather(true);
 
   const handlenotesclick = () => {
-    window.location.href = '/notes';
+    router.push('/notes');
   }
 
   return (
@@ -53,7 +54,7 @@ const Sidebar = () => {
       <SidebarItem icon={<Trash size={24} />} />
       <SidebarItem icon={<BookOpen size={24} />} />
       <SidebarItem icon={<Phone size={24} />} />
-      <SidebarItem icon={<User size={24} />} />
+      <SidebarItem icon={<User size={24} />} onClick={()=>router.push('/chatbot')} />
       {/* Weather Icon */}
       <SidebarItem icon={<Cloud size={24} />} onClick={handleWeatherClick} />
       
