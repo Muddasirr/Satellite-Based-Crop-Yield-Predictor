@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     const { name, type, description, lat, long } = req.body;
 
     if (!name || !type || !lat || !long) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      return res.status(400).json({ error: 'Missing required field' });
     }
 
     const { data, error } = await supabase.from('Notes').insert([
