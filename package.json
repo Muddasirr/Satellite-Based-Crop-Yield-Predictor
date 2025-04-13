@@ -16,7 +16,7 @@
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.8",
     "@phosphor-icons/react": "^2.1.7",
-    "@sentinel-hub/sentinelhub-js": "^0.8.10",
+    
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.3",
     "@turf/turf": "^7.2.0",
@@ -24,7 +24,7 @@
     "axios": "^1.7.9",
     "bcryptjs": "^3.0.2",
     "date-fns": "^4.1.0",
-    "fast-xml-parser": "^5.0.9",
+  
     "groq-sdk": "^0.19.0",
     "jsonwebtoken": "^9.0.2",
     "mapbox-gl": "^3.10.0",
