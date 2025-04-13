@@ -1,5 +1,4 @@
-// pages/api/notes/index.js
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '../../../../lib/supabase/client';
 
 export default async function handler(req, res) {
   if (req.method === 'GET') {
