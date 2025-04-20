@@ -2,12 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
-import { Box, Fab } from "@mui/material";
+import { Box, Fab, Modal, TextField, Button, Typography, Stack } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import axios from "axios";
 import * as turf from "@turf/turf";
-
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 
@@ -15,38 +14,67 @@ const ShowMap = () => {
   const mapContainerRef = useRef(null);
   const mapRef = useRef();
   const drawRef = useRef();
+
   const [drawingMode, setDrawingMode] = useState(false);
   const [fieldName, setFieldName] = useState("");
+  const [openNameModal, setOpenNameModal] = useState(false);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [newFieldData, setNewFieldData] = useState(null);
+
+  const getLocationName = async (longitude, latitude) => {
+    const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${accessToken}`;
+    try {
+      const response = await axios.get(url);
+      const features = response.data.features;
+      const place = features.find(f => f.place_type.includes("place")) || features[0];
+      return place?.place_name || "Unknown location";
+    } catch (error) {
+      console.error("Reverse geocoding failed:", error);
+      return "Error fetching location";
+    }
+  };
 
   const addField = async (data) => {
     try {
-      const response = await axios.post("/api/fields/createfield", data );
-      
-      window.alert("Field Created Successfully");
+      await axios.post("/api/fields/createfield", data);
+      alert("Field Created Successfully");
     } catch (error) {
       console.error(error);
       alert("Failed to create field");
     }
   };
 
-  const coordinates = [
-    [67.0314, 24.8572], // near Saddar
-    [67.0367, 24.8600], // near Saddar
-    [67.0380, 24.8545], // near Saddar
-    [67.0332, 24.8520], // near Saddar
-    [67.0314, 24.8572]  // closing the loop
-  ];
-  
-  const geojson = {
-    type: "Feature",
-    geometry: {
-      type: "Polygon",
-      coordinates: [coordinates], // This forms a closed polygon
-    },
-    properties: {},
+  const handleFieldDraw = async (polygon) => {
+    const area = turf.area(polygon);
+    const center = turf.centroid(polygon).geometry.coordinates;
+    const locationName = await getLocationName(center[0], center[1]);
+
+    const data = {
+      name: fieldName,
+      area: area / 1000,
+      long: center[0],
+      lat: center[1],
+      coordinates: polygon.geometry.coordinates,
+      locationName,
+    };
+
+    setNewFieldData(data);
+    setOpenConfirmModal(true);
   };
-  
-  
+
+  const confirmCreateField = async () => {
+    await addField(newFieldData);
+    drawRef.current.deleteAll();
+    setOpenConfirmModal(false);
+    setDrawingMode(false);
+  };
+
+  const cancelCreateField = () => {
+    drawRef.current.deleteAll();
+    setOpenConfirmModal(false);
+    setDrawingMode(false);
+  };
 
   useEffect(() => {
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
@@ -80,41 +108,11 @@ const ShowMap = () => {
           "sky-atmosphere-sun-intensity": 15,
         },
       });
-      mapRef.current.addSource("custom-polygon", {
-        type: "geojson",
-        data: geojson,
-      });
-    
-      mapRef.current.addLayer({
-        id: "custom-polygon-layer",
-        type: "fill",
-        source: "custom-polygon",
-        layout: {},
-        paint: {
-          "fill-color": "#00ff00",
-          "fill-opacity": 0.5,
-        },
-      });
-    
-      // Optional: Add an outline layer for the polygon
-      mapRef.current.addLayer({
-        id: "custom-polygon-outline",
-        type: "line",
-        source: "custom-polygon",
-        layout: {},
-        paint: {
-          "line-color": "#000",
-          "line-width": 2,
-        },
-      });
     });
 
     const draw = new MapboxDraw({
       displayControlsDefault: false,
-      controls: {
-        polygon: true,
-        trash: true,
-      },
+      controls: { polygon: true, trash: true },
       defaultMode: "simple_select",
     });
 
@@ -123,71 +121,100 @@ const ShowMap = () => {
 
     mapRef.current.on("draw.create", async (e) => {
       if (!drawingMode) return;
-
       const polygon = e.features[0];
-      const area = turf.area(polygon);
-   
-
-
-      const center = turf.centroid(polygon).geometry.coordinates;
-
-      const confirm = window.confirm(
-        `Field Name: ${fieldName}\nArea: ${area.toFixed(2)} sqm\nLocation: [${center[0].toFixed(
-          5
-        )}, ${center[1].toFixed(5)}]\n\nDo you want to create this field?`
-      );
-
-      if (confirm) {
-        
-        const data = {
-          name: fieldName,
-          area:area/1000,
-          long:center[0],
-          lat:center[1],
-           coordinates: polygon.geometry.coordinates,
-        };
-        await addField(data);
-        draw.deleteAll(); // reset draw
-        setDrawingMode(false);
-      } else {
-        draw.deleteAll(); // delete drawn shape
-        setDrawingMode(false);
-      }
+      await handleFieldDraw(polygon);
     });
 
     return () => mapRef.current.remove();
-  }, [fieldName, drawingMode]);
+  }, [drawingMode, fieldName]);
 
   const startFieldCreation = () => {
-    const name = window.prompt("Enter Field Name:");
-    if (!name) return;
-
-    setFieldName(name);
-    setDrawingMode(true);
-    drawRef.current.changeMode("draw_polygon");
+    setOpenNameModal(true);
   };
 
   return (
-    <Box
-      ref={mapContainerRef}
-      sx={{
-        width: "100%",
-        height: "100vh",
-        position: "relative",
-      }}
-    >
+    <>
+      <Box ref={mapContainerRef} sx={{ width: "100%", height: "100vh", position: "relative" }} />
+
       <Fab
         color="success"
-        sx={{
-          position: "absolute",
-          bottom: 20,
-          right: 20,
-        }}
+        sx={{ position: "absolute", bottom: 20, right: 20 }}
         onClick={startFieldCreation}
       >
         <Add />
       </Fab>
-    </Box>
+
+      {/* Field Name Input Modal */}
+      <Modal open={openNameModal} onClose={() => setOpenNameModal(false)}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+            width: 300,
+          }}
+        >
+          <Typography variant="h6" mb={2}>Enter Field Name</Typography>
+          <TextField
+            fullWidth
+            value={fieldName}
+            onChange={(e) => setFieldName(e.target.value)}
+            placeholder="Field name"
+            variant="outlined"
+          />
+          <Stack direction="row" spacing={2} justifyContent="flex-end" mt={2}>
+            <Button onClick={() => setOpenNameModal(false)}>Cancel</Button>
+            <Button
+              variant="contained"
+              onClick={() => {
+                setOpenNameModal(false);
+                setDrawingMode(true);
+                drawRef.current.changeMode("draw_polygon");
+              }}
+              disabled={!fieldName}
+            >
+              Draw
+            </Button>
+          </Stack>
+        </Box>
+      </Modal>
+
+      {/* Field Confirmation Modal */}
+      <Modal open={openConfirmModal} onClose={cancelCreateField}>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            borderRadius: 2,
+            width: 350,
+          }}
+        >
+          <Typography variant="h6" mb={2}>Confirm Field Creation</Typography>
+          {newFieldData && (
+            <>
+              <Typography><strong>Name:</strong> {newFieldData.name}</Typography>
+              <Typography><strong>Area:</strong> {newFieldData.area.toFixed(2)} sq.m</Typography>
+              <Typography><strong>Location:</strong> {newFieldData.locationName}</Typography>
+              <Typography><strong>Coordinates:</strong> [{newFieldData.lat.toFixed(5)}, {newFieldData.long.toFixed(5)}]</Typography>
+            </>
+          )}
+          <Stack direction="row" spacing={2} justifyContent="flex-end" mt={3}>
+            <Button onClick={cancelCreateField}>Cancel</Button>
+            <Button variant="contained" onClick={confirmCreateField}>Confirm</Button>
+          </Stack>
+        </Box>
+      </Modal>
+    </>
   );
 };
 
