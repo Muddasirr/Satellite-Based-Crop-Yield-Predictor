@@ -60,10 +60,10 @@ const FieldManagement = () => {
       {/* Sidebar */}
       <Box sx={{ width: "45%", bgcolor: "white", p: 2, boxShadow: 1 }}>
         <Typography variant="h6" fontWeight="bold">
-          FF
+          
         </Typography>
         <Typography variant="body2" color="gray">
-          Owner
+          Owner: Agro.io
         </Typography>
 
         <Box sx={{ mt: 2, bgcolor: "#eee", p: 1, borderRadius: 1 }}>
