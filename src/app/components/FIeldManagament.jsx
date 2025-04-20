@@ -40,6 +40,7 @@ const FieldManagement = () => {
 
   const getfields = async () => {
     const response = await axios.get('/api/fields/getfield');
+    console.log(response.data)
    setFields(response.data.field)
   }
    const toggleExpand = () => setExpanded(!expanded);
@@ -123,6 +124,7 @@ const FieldManagement = () => {
           <Divider />
 
           {expanded && (
+            <Box>
             <List>
               {filteredFields.map((field, index) => (
                 <ListItem key={index}>
@@ -147,6 +149,7 @@ const FieldManagement = () => {
                 </ListItem>
               ))}
             </List>
+            </Box>
           )}
         </Box>
       </Box>
