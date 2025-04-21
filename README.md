@@ -11,6 +11,29 @@ An additional feature is its end-to-end integration of an LLM-based chatbot, all
 - [System Design](https://www.overleaf.com/read/hnnxdkxhwyjt#e40bdf)
 
 
+## 🧠 Model Overview
+We developed a satellite-based crop yield prediction system using publicly available Landsat imagery, tailored specifically for Pakistan's agricultural landscape.
+
+- Region Focus: Division-wise areas across Pakistan
+
+- Temporal Coverage: Multi-year imagery during the crop growing season
+
+- Data Source: Landsat bands — especially Band 4 (Red) and Band 5 (Near-Infrared) — known for their value in vegetation analysis
+
+### 🔧 Technical Approach
+- We extracted relevant infrared and near-infrared data to assess crop health and growth.
+
+- Each sample combined geographic and actual yield data (in kg/ha), forming a rich dataset for training.
+
+- A custom Convolutional Neural Network (CNN) was trained on this data to map satellite features to crop yield.
+
+- Typical yield values ranged between 2000–2500 kg per hectare.
+
+### 🎯 Performance
+- Achieved Root Mean Square Error (RMSE) of just 11%, reflecting strong prediction accuracy.
+
+- This allows for timely, scalable, and accurate yield forecasting, aiding better agricultural planning, policy-making, and resource allocation.
+
 
 ## Deployment
 
