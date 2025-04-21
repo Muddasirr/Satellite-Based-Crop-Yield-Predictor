@@ -4,6 +4,14 @@
 This Final Year Project, submitted to IBA Karachi, is a Pakistan-specific initiative aimed at empowering agricultural stakeholders, researchers, and policymakers with data-driven insights. The system uses multispectral satellite imagery and comparative machine learning models to predict crop yield which addresses the gap of open-source, localized agricultural intelligence in the country.
 
 An additional feature is its end-to-end integration of an LLM-based chatbot, allowing users to interact with the system in natural language. This makes complex yield data and predictions accessible even to non-technical users, enabling better planning, resource allocation, and agricultural decision-making in Pakistan.
+
+## Documentation
+
+- [Software Requirements Specification](https://www.overleaf.com/read/wjrczkthrrpc#1c0eb4)
+- [System Design](https://www.overleaf.com/read/hnnxdkxhwyjt#e40bdf)
+
+
+
 ## Deployment
 
 First, run the development server:
