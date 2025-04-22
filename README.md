@@ -29,10 +29,28 @@ We developed a satellite-based crop yield prediction system using publicly avail
 
 - Typical yield values ranged between 2000–2500 kg per hectare.
 
+### 🏗️ Model Architecture
+
+Our crop yield prediction model uses a **VGG-inspired Convolutional Neural Network (CNN)** optimized for regression tasks on satellite imagery:
+
+- **11 convolutional layers** organized into four sequential blocks  
+- Each block uses the structure:  
+  `3×3 Conv → BatchNorm → ReLU → Dropout`
+
+- **Downsampling** is achieved via **stride‑2 convolutions** instead of max-pooling at the end of Blocks 1 to 3  
+- **Block 4** increases feature depth to **1024 channels** without further spatial downsampling  
+- Output from the final conv layer is a feature map of **1024×16×16**, which is **flattened**  
+- Passed through a **2048-unit fully connected layer**  
+- Ends with a **single linear output neuron** for regression (predicting continuous crop yield)
+
+This architecture was chosen for its balance of **depth, parameter efficiency, and spatial awareness**, making it well-suited for geospatial imagery and yield prediction.
+
 ### 🎯 Performance
 - Achieved Root Mean Square Error (RMSE) of just 11%, reflecting strong prediction accuracy.
 
 - This allows for timely, scalable, and accurate yield forecasting, aiding better agricultural planning, policy-making, and resource allocation.
+
+
 
 
 ## Deployment
