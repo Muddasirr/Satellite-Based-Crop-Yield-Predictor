@@ -1,4 +1,4 @@
-
+![Satellite-Based-Crop-Yield-Predictor](https://socialify.git.ci/Muddasirr/Satellite-Based-Crop-Yield-Predictor/image?custom_description=Predict.+Plan.+Prosper+%0ACrop+Intelligence+for+Pakistan&description=1&font=Source+Code+Pro&forks=1&name=1&pattern=Solid&pulls=1&stargazers=1&theme=Auto)
 # 🌾 Satellite-Based Crop Yield Prediction System
 
 This Final Year Project, submitted to IBA Karachi, is a Pakistan-specific initiative aimed at empowering agricultural stakeholders, researchers, and policymakers with data-driven insights. The system uses multispectral satellite imagery and comparative machine learning models to predict crop yield which addresses the gap of open-source, localized agricultural intelligence in the country.
