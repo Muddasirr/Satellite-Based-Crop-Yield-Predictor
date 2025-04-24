@@ -1,9 +1,37 @@
 'use client'
 import React from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 import { Box, Button, Grid, Typography, Paper } from "@mui/material";
-import StyledTextField from "../components/StyledTextField";
+import { useRouter } from "next/navigation";
+import StyledTextField from "../../components/StyledTextField";
+import useAuthStore from "../../store/useAuthStore";
 
-const SignupPage = () => {
+const Login = () => {
+  const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm();
+
+  const { login } = useAuthStore(); // 👈 get the login function
+
+  const onSubmit = async (data) => {
+    try {
+      const response = await axios.post("/api/auth/signin", data);
+      console.log("Login successful:", response.data);
+      
+      // Set user globally
+      login(response.data.user); // 👈 set the user in Zustand
+  
+      router.push("/dashboard/map");
+    } catch (error) {
+      console.error("Login error:", error.response?.data || error.message);
+    }
+  };
+  
+
   return (
     <Grid container sx={{ height: "100vh" }}>
       {/* Left Side - Background Image with Overlay */}
@@ -43,9 +71,8 @@ const SignupPage = () => {
             justifyContent: "center",
             height: "100%",
             margin: "0 auto",
-          
             maxWidth: "380px",
-            padding: "2px", // Adjust padding for better spacing
+            padding: "2px",
           }}
         >
           <Box sx={{ textAlign: "center", marginBottom: "24px" }}>
@@ -59,28 +86,46 @@ const SignupPage = () => {
               }}
             />
             <Typography variant="h5" fontWeight={600}>
-              Welcome to Agro.io
+              Welcome back to Agro.io
             </Typography>
             <Typography variant="body2" fontWeight={600} color="textSecondary">
-              Create an account to access Agro.io and start setting up your farm and garden.
+              Log in to access your farm and garden dashboard.
             </Typography>
           </Box>
 
-          <Box component="form" noValidate sx={{ width: "100%", margin: "0 auto" }}>
-            <StyledTextField fullWidth margin="normal" label="First Name" variant="outlined" />
-            <StyledTextField fullWidth margin="normal" label="Last Name" variant="outlined" />
-            <StyledTextField fullWidth margin="normal" label="Email Address" variant="outlined" />
-            <StyledTextField fullWidth margin="normal" label="Password (8+ Characters)" type="password" variant="outlined" />
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+            <StyledTextField
+              fullWidth
+              margin="normal"
+              label="Email Address"
+              variant="outlined"
+              {...register("email", { required: "Email is required" })}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+            />
 
-            <Typography variant="body2" color="textSecondary" sx={{ textAlign: "center", marginTop: "12px" }}>
-              By continuing, you agree to Fairm’s{" "}
-              <a href="#" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>Terms & Conditions</a> and{" "}
-              <a href="#" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>Privacy Policy</a>
-            </Typography>
+            <StyledTextField
+              fullWidth
+              margin="normal"
+              label="Password"
+              type="password"
+              variant="outlined"
+              {...register("password", { 
+                required: "Password is required", 
+                minLength: { 
+                  value: 8, 
+                  message: "Must be at least 8 characters" 
+                } 
+              })}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+            />
 
             <Button
               fullWidth
               variant="contained"
+              type="submit"
+              disabled={isSubmitting}
               sx={{
                 mt: 2,
                 py: 1.5,
@@ -88,16 +133,16 @@ const SignupPage = () => {
                 borderRadius: "10px",
               }}
             >
-              Continue
+              {isSubmitting ? "Logging in..." : "Log In"}
             </Button>
 
-            {/* Apple and Google login buttons with square borders */}
+            {/* Social login buttons */}
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, mt: 3 }}>
               <Button
                 variant="outlined"
                 sx={{
                   borderRadius: "8px",
-                  width: "45%", // Increased width for a better look
+                  width: "45%",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
@@ -117,7 +162,7 @@ const SignupPage = () => {
                 variant="outlined"
                 sx={{
                   borderRadius: "8px",
-                  width: "45%", // Increased width for a better look
+                  width: "45%",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
@@ -130,11 +175,11 @@ const SignupPage = () => {
               </Button>
             </Box>
 
-            {/* Already have an account? Text */}
+            {/* Don't have an account? Text */}
             <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
-              Already have an account?{" "}
-              <a href="/signin" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
-                Log In
+              Don't have an account?{" "}
+              <a href="/signup" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
+                Sign Up
               </a>
             </Typography>
           </Box>
@@ -144,4 +189,4 @@ const SignupPage = () => {
   );
 };
 
-export default SignupPage;
+export default Login;

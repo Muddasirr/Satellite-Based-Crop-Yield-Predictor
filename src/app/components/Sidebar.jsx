@@ -1,3 +1,4 @@
+'use client'
 import { useState } from "react";
 import { Box, Paper, IconButton } from "@mui/material";
 import { Calendar, SquaresFour, Smiley, MapPin, Upload, FileText, Trash, BookOpen, Phone, User, Cloud } from "@phosphor-icons/react";

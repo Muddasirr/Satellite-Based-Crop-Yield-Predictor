@@ -19,10 +19,7 @@ import axios from 'axios';
 
 
 
-const fieldsData = [
-  { id: 1, name: "Field 1", area: "811.4 ha", color: "red" },
-  { id: 2, name: "Field 2", area: "0.1 ha", color: "blue" },
-];
+
 
 const FieldManagement = () => {
 
@@ -124,37 +121,37 @@ const FieldManagement = () => {
           <Divider />
 
           {expanded && (
-            <Box>
-            <List>
-              {filteredFields.map((field, index) => (
-                <ListItem key={index}>
-                  <ListItemIcon>
-                    <Box
-                      sx={{
-                        width: 30,
-                        height: 30,
-                        borderRadius: "4px",
-                        bgcolor: 'green',
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText primary={field.name} secondary={"Area:\n" + field.area + "\nha"} />
-                  <Checkbox
-                    checked={selectedFields.includes(field.id)}
-                    onChange={() => handleSelect(field.id)}
-                  />
-                </ListItem>
-              ))}
-            </List>
-            </Box>
+           <Box sx={{ maxHeight: 400, overflowY: "auto" }}>
+           <List>
+             {filteredFields.map((field, index) => (
+               <ListItem key={index}>
+                 <ListItemIcon>
+                   <Box
+                     sx={{
+                       width: 30,
+                       height: 30,
+                       borderRadius: "4px",
+                       bgcolor: 'green',
+                       display: "flex",
+                       justifyContent: "center",
+                       alignItems: "center",
+                     }}
+                   />
+                 </ListItemIcon>
+                 <ListItemText primary={field.name} secondary={`Area: ${field.area} ha`} />
+                 <Checkbox
+                   checked={selectedFields.includes(field.id)}
+                   onChange={() => handleSelect(field.id)}
+                 />
+               </ListItem>
+             ))}
+           </List>
+         </Box>
           )}
         </Box>
       </Box>
 
-      {/* Floating Action Button */}
+
 
 
     </Box>
