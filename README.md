@@ -1,6 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+![Satellite-Based-Crop-Yield-Predictor](https://socialify.git.ci/Muddasirr/Satellite-Based-Crop-Yield-Predictor/image?custom_description=Predict.+Plan.+Prosper+%0ACrop+Intelligence+for+Pakistan&description=1&font=Source+Code+Pro&forks=1&name=1&pattern=Solid&pulls=1&stargazers=1&theme=Auto)
 
-## Getting Started
+This Final Year Project, submitted to IBA Karachi, is a Pakistan-specific initiative aimed at empowering agricultural stakeholders, researchers, and policymakers with data-driven insights. The system uses multispectral satellite imagery and comparative machine learning models to predict crop yield which addresses the gap of open-source, localized agricultural intelligence in the country.
+
+An additional feature is its end-to-end integration of an LLM-based chatbot, allowing users to interact with the system in natural language. This makes complex yield data and predictions accessible even to non-technical users, enabling better planning, resource allocation, and agricultural decision-making in Pakistan.
+
+## Documentation
+
+- [Software Requirements Specification](https://www.overleaf.com/read/wjrczkthrrpc#1c0eb4)
+- [System Design](https://www.overleaf.com/read/hnnxdkxhwyjt#e40bdf)
+
+
+## 🧠 Model Overview
+We developed a satellite-based crop yield prediction system using publicly available Landsat imagery, tailored specifically for Pakistan's agricultural landscape.
+
+- Region Focus: Division-wise areas across Pakistan
+
+- Temporal Coverage: Multi-year imagery during the crop growing season
+
+- Data Source: Landsat bands — especially Band 4 (Red) and Band 5 (Near-Infrared) — known for their value in vegetation analysis
+
+### 🔧 Technical Approach
+- We extracted relevant infrared and near-infrared data to assess crop health and growth.
+
+- Each sample combined geographic and actual yield data (in kg/ha), forming a rich dataset for training.
+
+- A custom Convolutional Neural Network (CNN) was trained on this data to map satellite features to crop yield.
+
+- Typical yield values ranged between 2000–2500 kg per hectare.
+
+### 🏗️ Model Architecture
+
+Our crop yield prediction model uses a **VGG-inspired Convolutional Neural Network (CNN)** optimized for regression tasks on satellite imagery:
+
+- **11 convolutional layers** organized into four sequential blocks  
+- Each block uses the structure:  
+  `3×3 Conv → BatchNorm → ReLU → Dropout`
+
+- **Downsampling** is achieved via **stride‑2 convolutions** instead of max-pooling at the end of Blocks 1 to 3  
+- **Block 4** increases feature depth to **1024 channels** without further spatial downsampling  
+- Output from the final conv layer is a feature map of **1024×16×16**, which is **flattened**  
+- Passed through a **2048-unit fully connected layer**  
+- Ends with a **single linear output neuron** for regression (predicting continuous crop yield)
+
+This architecture was chosen for its balance of **depth, parameter efficiency, and spatial awareness**, making it well-suited for geospatial imagery and yield prediction.
+
+### 🎯 Performance
+- Achieved Root Mean Square Error (RMSE) of just 11%, reflecting strong prediction accuracy.
+
+- This allows for timely, scalable, and accurate yield forecasting, aiding better agricultural planning, policy-making, and resource allocation.
+
+
+
+
+## Deployment
 
 First, run the development server:
 
@@ -12,26 +64,22 @@ yarn dev
 pnpm dev
 # or
 bun dev
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000 with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+You can start editing the page by modifying app/page.js. The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses next/font to automatically optimize and load Geist, a new font family for Vercel.
 
-## Learn More
+## Authors
 
-To learn more about Next.js, take a look at the following resources:
+- [Muddasir Rizwan](https://github.com/Muddasirr)
+- [Muhammad Hadi](https://github.com/Theycallmeinsane)
+- [Ahmed Raza](https://github.com/Ahmeddraaza)
+- [Moeen Haider](https://github.com/MoeenH)
+- [Hasan Atiq](https://github.com)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
-# Satellite-Based-Crop-Yield-Predictor
