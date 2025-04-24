@@ -16,7 +16,6 @@
     "@mui/icons-material": "^6.4.1",
     "@mui/material": "^6.4.8",
     "@phosphor-icons/react": "^2.1.7",
-    
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.49.3",
     "@turf/turf": "^7.2.0",
@@ -24,7 +23,6 @@
     "axios": "^1.7.9",
     "bcryptjs": "^3.0.2",
     "date-fns": "^4.1.0",
-  
     "groq-sdk": "^0.19.0",
     "jsonwebtoken": "^9.0.2",
     "mapbox-gl": "^3.10.0",
@@ -39,8 +37,9 @@
     "react-hook-form": "^7.54.2",
     "react-leaflet": "^5.0.0",
     "recharts": "^2.15.1",
+    "styled-components": "^6.1.16",
     "terraformer-wkt-parser": "^1.2.1",
-    "styled-components": "^6.1.16"
+    "zustand": "^5.0.3"
   },
   "devDependencies": {
     "@types/node": "22.13.13",

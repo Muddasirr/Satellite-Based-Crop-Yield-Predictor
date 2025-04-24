@@ -1,34 +1,38 @@
 'use client'
 import React from "react";
-import { useForm } from "react-hook-form";
-import axios from "axios";
 import { Box, Button, Grid, Typography, Paper } from "@mui/material";
+import StyledTextField from "../../components/StyledTextField";
+import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import StyledTextField from "../components/StyledTextField";
 
-const Login = () => {
+const SignupPage = () => {
   const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = async (data) => {
-    
     try {
-      const response = await axios.post("/api/auth/signin", data);
-      console.log("Login successful:", response.data);
-      router.push('/map');
-       
-    } catch (error) {
-      console.error("Login error:", error.response?.data || error.message);
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        router.push('/signin');
+
+
+      } else {
+        alert(result.message || "Signup failed");
+      }
+    } catch (err) {
+      console.error("Signup error:", err);
     }
   };
 
   return (
     <Grid container sx={{ height: "100vh" }}>
-      {/* Left Side - Background Image with Overlay */}
+      {/* Left Side */}
       <Grid
         item
         xs={12}
@@ -42,7 +46,6 @@ const Login = () => {
           borderRadius: "10px 0 0 10px",
         }}
       >
-        {/* Overlay */}
         <Box
           sx={{
             position: "absolute",
@@ -70,24 +73,32 @@ const Login = () => {
           }}
         >
           <Box sx={{ textAlign: "center", marginBottom: "24px" }}>
-            <Box
-              component="img"
-              src="/logo.png"
-              alt="Farm"
-              sx={{
-                width: "25%",
-                height: "auto",
-              }}
-            />
-            <Typography variant="h5" fontWeight={600}>
-              Welcome back to Agro.io
-            </Typography>
+            <Box component="img" src="/logo.png" alt="Farm" sx={{ width: "25%", height: "auto" }} />
+            <Typography variant="h5" fontWeight={600}>Welcome to Agro.io</Typography>
             <Typography variant="body2" fontWeight={600} color="textSecondary">
-              Log in to access your farm and garden dashboard.
+              Create an account to access Agro.io and start setting up your farm and garden.
             </Typography>
           </Box>
 
-          <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} noValidate sx={{ width: "100%", margin: "0 auto" }}>
+            <StyledTextField
+              fullWidth
+              margin="normal"
+              label="First Name"
+              variant="outlined"
+              {...register("first_name", { required: "First name is required" })}
+              error={!!errors.first_name}
+              helperText={errors.first_name?.message}
+            />
+            <StyledTextField
+              fullWidth
+              margin="normal"
+              label="Last Name"
+              variant="outlined"
+              {...register("last_name", { required: "Last name is required" })}
+              error={!!errors.last_name}
+              helperText={errors.last_name?.message}
+            />
             <StyledTextField
               fullWidth
               margin="normal"
@@ -97,29 +108,27 @@ const Login = () => {
               error={!!errors.email}
               helperText={errors.email?.message}
             />
-
             <StyledTextField
               fullWidth
               margin="normal"
-              label="Password"
+              label="Password (8+ Characters)"
               type="password"
               variant="outlined"
-              {...register("password", { 
-                required: "Password is required", 
-                minLength: { 
-                  value: 8, 
-                  message: "Must be at least 8 characters" 
-                } 
-              })}
+              {...register("password", { required: "Password is required", minLength: 8 })}
               error={!!errors.password}
               helperText={errors.password?.message}
             />
+
+            <Typography variant="body2" color="textSecondary" sx={{ textAlign: "center", marginTop: "12px" }}>
+              By continuing, you agree to Fairm’s{" "}
+              <a href="#" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>Terms & Conditions</a> and{" "}
+              <a href="#" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>Privacy Policy</a>
+            </Typography>
 
             <Button
               fullWidth
               variant="contained"
               type="submit"
-              disabled={isSubmitting}
               sx={{
                 mt: 2,
                 py: 1.5,
@@ -127,10 +136,10 @@ const Login = () => {
                 borderRadius: "10px",
               }}
             >
-              {isSubmitting ? "Logging in..." : "Log In"}
+              Continue
             </Button>
 
-            {/* Social login buttons */}
+            {/* Social Buttons */}
             <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 2, mt: 3 }}>
               <Button
                 variant="outlined"
@@ -148,9 +157,7 @@ const Login = () => {
                 <Box component="img" src="/apple.png" alt="Apple logo" sx={{ width: 40, height: "auto" }} />
               </Button>
 
-              <Typography variant="body2" sx={{ textAlign: "center", fontWeight: "600" }}>
-                OR
-              </Typography>
+              <Typography variant="body2" sx={{ textAlign: "center", fontWeight: "600" }}>OR</Typography>
 
               <Button
                 variant="outlined"
@@ -169,11 +176,11 @@ const Login = () => {
               </Button>
             </Box>
 
-            {/* Don't have an account? Text */}
+            {/* Already have an account? */}
             <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
-              Don't have an account?{" "}
-              <a href="/signup" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
-                Sign Up
+              Already have an account?{" "}
+              <a href="/signin" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
+                Log In
               </a>
             </Typography>
           </Box>
@@ -183,4 +190,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignupPage;
