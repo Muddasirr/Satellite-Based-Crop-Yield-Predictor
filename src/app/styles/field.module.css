@@ -1,0 +1,514 @@
+/* Main Container */
+.container {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    background-color: #f5f7fa;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+      "Helvetica Neue", sans-serif;
+  }
+  
+  /* Left Sidebar */
+  .sidebar {
+    width: 240px;
+    background-color: white;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  
+  .sidebarHeader {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .brandContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+  }
+  
+  .brandName {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .expandIcon {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .ownerText {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+  }
+  
+  .seasonContainer {
+    padding: 16px;
+  }
+  
+  .seasonItem {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f5f7fa;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .seasonIcon {
+    margin-right: 8px;
+  }
+  
+  .createGroupContainer {
+    margin-top: auto;
+    padding: 16px;
+    border-top: 1px solid #f0f0f0;
+  }
+  
+  .createGroupBtn {
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: #2e7d32;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
+  }
+  
+  .plusIcon {
+    margin-right: 8px;
+    font-size: 18px;
+  }
+  
+  /* Middle Panel - Fields List */
+  .fieldsList {
+    width: 360px;
+    background-color: white;
+    border-right: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  
+  .fieldsListHeader {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .seasonTitle {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+  }
+  
+  .hectareInfo {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+  }
+  
+  .searchContainer {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .searchInputWrapper {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    background-color: #f5f7fa;
+    border-radius: 6px;
+    padding: 0 12px;
+  }
+  
+  .searchIcon {
+    color: #666;
+    font-size: 20px;
+  }
+  
+  .searchInput {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 10px;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  .sortButton {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  .sortIcon {
+    font-size: 18px;
+  }
+  
+  .fieldsSection {
+    padding: 0 16px;
+  }
+  
+  .fieldsSectionHeader {
+    display: flex;
+    align-items: center;
+    padding: 12px 0;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .expandIcon {
+    color: #666;
+    margin-right: 8px;
+  }
+  
+  .sectionTitle {
+    font-size: 14px;
+    font-weight: 500;
+    flex: 1;
+  }
+  
+  .hectareCount {
+    font-size: 14px;
+    color: #666;
+  }
+  
+  .fieldItem {
+    display: flex;
+    align-items: center;
+    padding: 12px 8px;
+    border-radius: 6px;
+    margin: 8px 0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .fieldItem:hover {
+    background-color: #f5f7fa;
+  }
+  
+  .fieldIcon {
+    width: 40px;
+    height: 40px;
+    background-color: #424242;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+  }
+  
+  .triangleIcon {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 18px solid #ff5722;
+  }
+  
+  .fieldInfo {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .fieldName {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .fieldArea {
+    font-size: 12px;
+    color: #666;
+  }
+  
+  .fieldCheckbox {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+  
+  /* Right Panel - Field Details */
+  .fieldDetails {
+    flex: 1;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  
+  /* Add this new rule to ensure the layout works when no field is selected */
+  .fieldsList + div:not(.fieldDetails) {
+    flex: 1;
+    background-color: #f5f7fa;
+  }
+  
+  .fieldDetailsHeader {
+    padding: 20px;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .fieldTitleContainer {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .fieldTitle {
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0 0 4px 0;
+  }
+  
+  .fieldSubtitle {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+  }
+  
+  .fieldActions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .actionButton {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .actionIcon {
+    width: 40px;
+    height: 40px;
+    background-color: #f5f7fa;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+  }
+  
+  .actionText {
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+  }
+  
+  .moreButton,
+  .closeButton {
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: #666;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+  }
+  
+  .tabsContainer {
+    display: flex;
+    border-bottom: 1px solid #f0f0f0;
+    padding: 0 20px;
+  }
+  
+  .tabButton {
+    padding: 16px 12px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #666;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .activeTab {
+    color: #000;
+    font-weight: 600;
+  }
+  
+  .activeTab::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #000;
+  }
+  
+  .proBadge {
+    font-size: 10px;
+    background-color: #f5f7fa;
+    color: #666;
+    padding: 2px 4px;
+    border-radius: 4px;
+  }
+  
+  .chartsContainer {
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .emptyState {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 16px;
+  }
+  
+  /* Floating Action Button */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: #2e7d32;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    z-index: 10;
+  }
+  
+  /* Charts Styling */
+  .embeddedCharts {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .chartCard {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+  }
+  
+  .chartHeader {
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  
+  .chartTitle {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  .downloadButton {
+    background: none;
+    border: none;
+    color: #666;
+    cursor: pointer;
+  }
+  
+  .chartContent {
+    padding: 16px;
+    position: relative;
+  }
+  
+  .ndviValue,
+  .precipValue {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+  
+  .valueBox {
+    background-color: #8bc34a;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .precipValue .valueBox {
+    background-color: #2196f3;
+  }
+  
+  .valueInfo {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+  }
+  
+  .dialogCharts {
+    padding: 16px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1200px) {
+    .sidebar {
+      width: 200px;
+    }
+  
+    .fieldsList {
+      width: 320px;
+    }
+  }
+  
+  @media (max-width: 992px) {
+    .container {
+      flex-direction: column;
+    }
+  
+    .sidebar {
+      width: 100%;
+      height: auto;
+      border-right: none;
+      border-bottom: 1px solid #e5e7eb;
+    }
+  
+    .fieldsList {
+      width: 100%;
+      height: 300px;
+      border-right: none;
+      border-bottom: 1px solid #e5e7eb;
+    }
+  
+    .fieldDetails {
+      flex: 1;
+    }
+  }
+  
