@@ -11,7 +11,7 @@ const Sidebar = () => {
   const handleWeatherClick = () => setOpenWeather(true);
 
   const handlenotesclick = () => {
-    router.push('/notes');
+    router.push('/dashboard/notes');
   }
 
   return (
@@ -30,16 +30,12 @@ const Sidebar = () => {
     >
       {/* Logo */}
       <Box 
+       component="img"
+      src="/logo.png"
+      onClick={()=>router.push('/dashboard/map')}
         sx={{
-          backgroundColor: "#4CAF50", // Green color
-          padding: "12px",
-        
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          color: "white",
-          fontSize: "20px",
-          fontWeight: "bold"
+          width: "100%",
+          height: "auto",          
         }}
       >
         
@@ -55,7 +51,7 @@ const Sidebar = () => {
       <SidebarItem icon={<Trash size={24} />} />
       <SidebarItem icon={<BookOpen size={24} />} />
       <SidebarItem icon={<Phone size={24} />} />
-      <SidebarItem icon={<User size={24} />} onClick={()=>router.push('/chatbot')} />
+      <SidebarItem icon={<User size={24} />} onClick={()=>router.push('/dashboard/chatbot')} />
       {/* Weather Icon */}
       <SidebarItem icon={<Cloud size={24} />} onClick={handleWeatherClick} />
       

@@ -1,23 +1,30 @@
-
 import { supabase } from '../../../../lib/supabase/client';
+import axios from 'axios';
 
 export default async function handler(req, res) {
   if (req.method === 'POST') {
-    console.log("request",req.body)
-    const { name, long, lat, area,coordinates } = req.body;
+    const { name, long, lat, area, coordinates,locationName } = req.body;
 
     try {
-      const { data, error } = await supabase
-        .from('Fields')
-        .insert([
-          {
-            name,
-            long,
-            lat,
-            area,
-            coordinates
-          }
-        ]);
+   
+      const location = locationName.split(',')[0].trim(); // simple cleanup
+      const response = await axios.post(
+        `http://192.168.5.104:8000/predict/?long=${Number(long)}&lat=${Number(lat)}&name=${location}&year=2024`
+      );
+
+      const prediction = response.data.prediction;
+
+ 
+      const { data, error } = await supabase.from('Fields').insert([
+        {
+          name,
+          long,
+          lat,
+          area,
+          coordinates,
+          prediction,
+        },
+      ]);
 
       if (error) {
         console.error('Supabase insert error:', error);
@@ -27,7 +34,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ message: 'Insert successful', data });
     } catch (err) {
       console.error('Internal server error:', err);
-      return res.status(500).json({ message: 'Internal Server Error' });
+      return res.status(500).json({ message: 'Internal Server Error', error: err.message });
     }
   } else {
     res.setHeader('Allow', ['POST']);

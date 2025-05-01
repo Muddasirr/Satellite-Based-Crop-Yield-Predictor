@@ -77,7 +77,7 @@ const OnboardingPage = () => {
               <Box component="img" src="/google.png" alt="Google logo" sx={{ width: 24, height: "auto" }} />
             </Button>
           </Box>
-          <a href="/signup">
+          <a href="/auth/signup">
           <Button
   fullWidth
   variant="outlined"
@@ -128,7 +128,7 @@ const OnboardingPage = () => {
 
         <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
           Already have an account?{" "}
-          <Link href="/signin" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
+          <Link href="/auth/signin" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
             Log In
           </Link>
         </Typography>
