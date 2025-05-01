@@ -20,7 +20,7 @@ const ShowMap = () => {
   const [openNameModal, setOpenNameModal] = useState(false);
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [newFieldData, setNewFieldData] = useState(null);
-
+  const [locationName,setlocationName]=useState('');
   const getLocationName = async (longitude, latitude) => {
     const accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${accessToken}`;
@@ -44,19 +44,22 @@ const ShowMap = () => {
       alert("Failed to create field");
     }
   };
+  
+
+
 
   const handleFieldDraw = async (polygon) => {
     const area = turf.area(polygon);
     const center = turf.centroid(polygon).geometry.coordinates;
-    const locationName = await getLocationName(center[0], center[1]);
-
+    const location= await getLocationName(center[0], center[1]);
+  setlocationName(location);
     const data = {
       name: fieldName,
       area: area / 1000,
       long: center[0],
       lat: center[1],
       coordinates: polygon.geometry.coordinates,
-      locationName,
+      locationName:location,
     };
 
     setNewFieldData(data);

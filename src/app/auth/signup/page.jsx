@@ -179,7 +179,7 @@ const SignupPage = () => {
             {/* Already have an account? */}
             <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
               Already have an account?{" "}
-              <a href="/signin" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
+              <a href="/auth/signin" style={{ color: "#427662", textDecoration: "none", fontWeight: "bold" }}>
                 Log In
               </a>
             </Typography>
