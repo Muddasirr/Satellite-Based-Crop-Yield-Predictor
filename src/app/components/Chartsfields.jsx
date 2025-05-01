@@ -10,7 +10,7 @@ import {
   Area,
   CartesianGrid,
 } from "recharts";
-
+import { Modal } from "@mui/material";
 const ndviData = [
   { month: "Jan", value: 0.1 },
   { month: "Feb", value: 0.12 },
@@ -56,10 +56,11 @@ const degreeDaysData = [
   { month: "Dec", value: 4792 },
 ];
 
-const  ClimateCharts = () => {
+const ClimateCharts = (props) => {
   return (
+    <Modal onClose={props.setOpen(false)}>
     <div className="p-4">
-      {/* NDVI Line Chart */}
+   
       <h3 className="mb-2 text-lg font-semibold">NDVI</h3>
       <ResponsiveContainer width="100%" height={150}>
         <LineChart data={ndviData}>
@@ -76,7 +77,7 @@ const  ClimateCharts = () => {
         </LineChart>
       </ResponsiveContainer>
 
-      {/* Accumulated Precipitation Area Chart */}
+   
       <h3 className="mb-2 text-lg font-semibold">Accumulated Precipitation</h3>
       <ResponsiveContainer width="100%" height={150}>
         <AreaChart data={precipitationData}>
@@ -99,7 +100,7 @@ const  ClimateCharts = () => {
         </AreaChart>
       </ResponsiveContainer>
 
-      {/* Growing Degree-Days Area Chart */}
+     
       <h3 className="mb-2 text-lg font-semibold">Growing Degree-Days</h3>
       <ResponsiveContainer width="100%" height={150}>
         <AreaChart data={degreeDaysData}>
@@ -122,6 +123,7 @@ const  ClimateCharts = () => {
         </AreaChart>
       </ResponsiveContainer>
     </div>
+    </Modal>
   );
 }
 export default ClimateCharts;

@@ -14,7 +14,8 @@ import {
 } from "@mui/material";
 import { ExpandMore, ExpandLess, Add, Sort } from "@mui/icons-material";
 import axios from 'axios';
-
+import useAuthStore from "../store/useAuthStore";
+import ClimateCharts from "./Chartsfields";
 
 
 
@@ -22,25 +23,28 @@ import axios from 'axios';
 
 
 const FieldManagement = () => {
+  const store = useAuthStore();
+  const setfields = store.setfields;
 
   const [fields, setFields] = useState([]);
 
   const [expanded, setExpanded] = useState(true);
   const [selectedFields, setSelectedFields] = useState([]);
   const [search, setSearch] = useState("");
-  
-  
-  
+  const [showAnalysis,setShowAnalysis] = useState(false);
+
+
   useEffect(() => {
     getfields();
-  },[])
+  }, [])
 
   const getfields = async () => {
     const response = await axios.get('/api/fields/getfield');
-    console.log(response.data)
-   setFields(response.data.field)
+
+    setFields(response.data.field)
+    setfields(response.data.field)
   }
-   const toggleExpand = () => setExpanded(!expanded);
+  const toggleExpand = () => setExpanded(!expanded);
 
   const handleSelect = (id) => {
     setSelectedFields((prev) =>
@@ -57,7 +61,7 @@ const FieldManagement = () => {
       {/* Sidebar */}
       <Box sx={{ width: "45%", bgcolor: "white", p: 2, boxShadow: 1 }}>
         <Typography variant="h6" fontWeight="bold">
-          
+
         </Typography>
         <Typography variant="body2" color="gray">
           Owner: Agro.io
@@ -121,35 +125,36 @@ const FieldManagement = () => {
           <Divider />
 
           {expanded && (
-           <Box sx={{ maxHeight: 400, overflowY: "auto" }}>
-           <List>
-             {filteredFields.map((field, index) => (
-               <ListItem key={index}>
-                 <ListItemIcon>
-                   <Box
-                     sx={{
-                       width: 30,
-                       height: 30,
-                       borderRadius: "4px",
-                       bgcolor: 'green',
-                       display: "flex",
-                       justifyContent: "center",
-                       alignItems: "center",
-                     }}
-                   />
-                 </ListItemIcon>
-                 <ListItemText primary={field.name} secondary={`Area: ${field.area} ha`} />
-                 <Checkbox
-                   checked={selectedFields.includes(field.id)}
-                   onChange={() => handleSelect(field.id)}
-                 />
-               </ListItem>
-             ))}
-           </List>
-         </Box>
+            <Box sx={{ maxHeight: 400, overflowY: "auto" }}>
+              <List>
+                {filteredFields.map((field, index) => (
+                  <ListItem onClick={()=>setShowAnalysis(true)} key={index}>
+                    <ListItemIcon>
+                      <Box
+                        sx={{
+                          width: 30,
+                          height: 30,
+                          borderRadius: "4px",
+                          bgcolor: 'green',
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      />
+                    </ListItemIcon>
+                    <ListItemText primary={field.name} secondary={`Area: ${field.area} ha`} />
+                    <Checkbox
+                      checked={selectedFields.includes(field.id)}
+                      onChange={() => handleSelect(field.id)}
+                    />
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
           )}
         </Box>
       </Box>
+      {showAnalysis && <ClimateCharts open={showAnalysis} setOpen={()=>setShowAnalysis(false)}/>}
 
 
 
