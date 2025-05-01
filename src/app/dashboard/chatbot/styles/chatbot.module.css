@@ -1,0 +1,233 @@
+
+.pageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f9fafb;
+    padding: 0;
+  }
+  
+  .chatbotWrapper {
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  
+  .chatContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: white;
+  }
+  
+  .chatHeader {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #eaeaea;
+    background-color: #f0f7f0;
+  }
+  
+  .chatTitle {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #166534;
+  }
+  
+  .messagesContainer {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    scroll-behavior: smooth;
+  }
+  
+  .messageWrapper {
+    display: flex;
+    margin-bottom: 1rem;
+    max-width: 85%;
+  }
+  
+  .userMessageWrapper {
+    margin-left: auto;
+    flex-direction: row-reverse;
+  }
+  
+  .botMessageWrapper {
+    margin-right: auto;
+  }
+  
+  .systemMessageWrapper {
+    margin: 0 auto 2rem auto;
+    text-align: center;
+    max-width: 80%;
+  }
+  
+  .avatarContainer {
+    display: flex;
+    align-items: flex-start;
+    margin: 0 0.75rem;
+  }
+  
+  .userAvatar,
+  .botAvatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  .userAvatar {
+    background-color: #e0f2f1;
+    color: #166534;
+  }
+  
+  .botAvatar {
+    background-color: #f0f7f0;
+    color: #166534;
+    font-size: 1rem;
+  }
+  
+  .message {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  
+  .userMessage {
+    background-color: #166534;
+    color: white;
+    border-radius: 8px 0 8px 8px;
+  }
+  
+  .botMessage {
+    background-color: #f0f7f0;
+    color: #1a1a1a;
+    border-radius: 0 8px 8px 8px;
+  }
+  
+  .systemMessage {
+    background-color: #f9fafb;
+    color: #4b5563;
+    border-radius: 8px;
+    font-size: 1.125rem;
+    font-weight: 500;
+    padding: 1rem 1.5rem;
+    border: 1px solid #eaeaea;
+  }
+  
+  .inputForm {
+    display: flex;
+    padding: 1rem;
+    border-top: 1px solid #eaeaea;
+    background-color: white;
+  }
+  
+  .inputField {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  
+  .inputField:focus {
+    border-color: #166534;
+    box-shadow: 0 0 0 2px rgba(22, 101, 52, 0.1);
+  }
+  
+  .inputField::placeholder {
+    color: #9ca3af;
+  }
+  
+  .inputField:disabled {
+    background-color: #f9fafb;
+    cursor: not-allowed;
+  }
+  
+  .sendButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-left: 0.5rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #166534;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .sendButton:hover {
+    background-color: #14532d;
+  }
+  
+  .sendButton:disabled {
+    background-color: #e5e7eb;
+    color: #9ca3af;
+    cursor: not-allowed;
+  }
+  
+  .loadingIndicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .loadingIndicator span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #166534;
+    opacity: 0.6;
+    animation: bounce 1.4s infinite ease-in-out both;
+  }
+  
+  .loadingIndicator span:nth-child(1) {
+    animation-delay: -0.32s;
+  }
+  
+  .loadingIndicator span:nth-child(2) {
+    animation-delay: -0.16s;
+  }
+  
+  @keyframes bounce {
+    0%,
+    80%,
+    100% {
+      transform: scale(0);
+    }
+    40% {
+      transform: scale(1);
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .pageContainer {
+      padding: 0;
+    }
+  
+    .chatbotWrapper {
+      height: 100vh;
+      max-width: 100%;
+      border-radius: 0;
+    }
+  
+    .messageWrapper {
+      max-width: 90%;
+    }
+  }
+  

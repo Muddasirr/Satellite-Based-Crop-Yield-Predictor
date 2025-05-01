@@ -4,6 +4,7 @@ import { Box, Paper, IconButton } from "@mui/material";
 import { Calendar, SquaresFour, Smiley, MapPin, Upload, FileText, Trash, BookOpen, Phone, User, Cloud } from "@phosphor-icons/react";
 import WeatherModal from "./WeatherModal";  // Modal component
 import { useRouter } from "next/navigation";
+import { Chat } from "@mui/icons-material";
 const Sidebar = () => {
   const router = useRouter();
   const [openWeather, setOpenWeather] = useState(false);
@@ -42,16 +43,12 @@ const Sidebar = () => {
       </Box>
 
       {/* Menu Items */}
-      <SidebarItem icon={<Calendar size={24} />} />
       <SidebarItem icon={<SquaresFour size={24} />} active />
-      <SidebarItem icon={<Smiley size={24} />} />
+
       <SidebarItem icon={<MapPin size={24} />} onClick={handlenotesclick} />
-      <SidebarItem icon={<Upload size={24} />} />
-      <SidebarItem icon={<FileText size={24} />} />
-      <SidebarItem icon={<Trash size={24} />} />
-      <SidebarItem icon={<BookOpen size={24} />} />
-      <SidebarItem icon={<Phone size={24} />} />
-      <SidebarItem icon={<User size={24} />} onClick={()=>router.push('/dashboard/chatbot')} />
+      
+
+      <SidebarItem icon={<Chat size={24} />} onClick={()=>router.push('/dashboard/chatbot')} />
       {/* Weather Icon */}
       <SidebarItem icon={<Cloud size={24} />} onClick={handleWeatherClick} />
       
