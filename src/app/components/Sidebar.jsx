@@ -44,7 +44,7 @@ const Sidebar = () => {
       {/* Menu Items */}
       <SidebarItem icon={<SquaresFour size={24} />} active />
 
-      <SidebarItem icon={<MapPin size={24} />} onClick={handlenotesclick} />
+      <SidebarItem  icon={<MapPin size={24} />} onClick={handlenotesclick} />
       
 
       <SidebarItem icon={<Chat size={24} />} onClick={()=>router.push('/dashboard/chatbot')} />

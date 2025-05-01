@@ -67,10 +67,11 @@ const ShowMap = () => {
   };
 
   const confirmCreateField = async () => {
-    await addField(newFieldData);
-    drawRef.current.deleteAll();
     setOpenConfirmModal(false);
     setDrawingMode(false);
+    await addField(newFieldData);
+    drawRef.current.deleteAll();
+  
   };
 
   const cancelCreateField = () => {

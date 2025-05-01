@@ -10,7 +10,7 @@ import {
   IconButton,
   Card,
   Divider,
-  Chip,
+  Chip
 } from "@mui/material";
 import { 
   LineChart, 
@@ -112,15 +112,14 @@ const WeatherModal = ({ open, handleClose }) => {
     setLoading(true);
     setError(null);
     try {
-      const weatherResponse = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${apiKey}`
+      const weatherResponse = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${apiKey}`
       );
       const forecastResponse = await axios.get(
         `https://api.openweathermap.org/data/2.5/forecast?q=${location}&units=metric&appid=${apiKey}`
       );
       setWeatherData(weatherResponse.data);
       
-      // Set weather condition for background
+    
       const mainCondition = weatherResponse.data.weather[0].main.toLowerCase();
       setWeatherCondition(mainCondition);
 
