@@ -1,130 +1,124 @@
-'use client';
-import { useState, useRef, useEffect } from 'react';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material';
-
+"use client"
+import { useState, useRef, useEffect } from "react"
+import styles from "./styles/chatbot.module.css"
 
 const Chatbot = () => {
   const [messages, setMessages] = useState([
-    { role: 'system', content: 'Ask me anything about agriculture 🌱' },
-  ]);
-  const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
-  const chatEndRef = useRef(null);
+    { role: "system", content: "How can I assist you with your agriculture-related query?" }
+  ])
+  const [input, setInput] = useState("")
+  const [loading, setLoading] = useState(false)
+  const chatEndRef = useRef(null)
+  const inputRef = useRef(null)
 
   const scrollToBottom = () => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }
 
-  useEffect(scrollToBottom, [messages]);
+  useEffect(scrollToBottom, [messages])
+
+  useEffect(() => {
+    inputRef.current?.focus()
+  }, [])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!input.trim()) return;
+    e.preventDefault()
+    if (!input.trim()) return
 
-    const userMessage = { role: 'user', content: input };
-    setMessages((prev) => [...prev, userMessage]);
-    setInput('');
-    setLoading(true);
+    const userMessage = { role: "user", content: input }
+    setMessages((prev) => [...prev, userMessage])
+    setInput("")
+    setLoading(true)
 
     try {
-      const res = await fetch(`/api/chat?question=${encodeURIComponent(input)}`);
-      const data = await res.json();
-      const botMessage = { role: 'bot', content: data.response };
-      setMessages((prev) => [...prev, botMessage]);
+      const res = await fetch(`/api/chat?question=${encodeURIComponent(input)}`)
+      const data = await res.json()
+      const botMessage = { role: "bot", content: data.response }
+      setMessages((prev) => [...prev, botMessage])
     } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { role: 'bot', content: 'Oops! Something went wrong.' },
-      ]);
+        { role: "bot", content: "Oops! Something went wrong." }
+      ])
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <Box
-      sx={{
-        maxWidth: 800,
-        mx: 'auto',
-        p: 2,
-        height: '90vh',
-        display: 'flex',
-        flexDirection: 'column',
-        border: '1px solid #ccc',
-        borderRadius: 2,
-        bgcolor: 'background.paper',
-      }}
-    >
-      <Typography variant="h5" align="center" gutterBottom>
-        🌾 AgriBot - Ask me about crops!
-      </Typography>
+    <div className={styles.chatContainer}>
+      <div className={styles.chatHeader}>
+        <h1 className={styles.chatTitle}>🌾 AgriBot</h1>
+      </div>
 
-      <Box
-        sx={{
-          flex: 1,
-          overflowY: 'auto',
-          mb: 2,
-          pr: 1,
-        }}
-      >
+      <div className={styles.messagesContainer}>
         {messages.map((msg, idx) => (
-          <Box
+          <div
             key={idx}
-            display="flex"
-            justifyContent={
-              msg.role === 'user' ? 'flex-end' : msg.role === 'bot' ? 'flex-start' : 'center'
-            }
-            my={1}
+            className={`${styles.messageWrapper} ${
+              msg.role === "user"
+                ? styles.userMessageWrapper
+                : msg.role === "system"
+                ? styles.systemMessageWrapper
+                : styles.botMessageWrapper
+            }`}
           >
-            <Paper
-              elevation={2}
-              sx={{
-                p: 1.5,
-                maxWidth: '75%',
-                bgcolor: msg.role === 'user' ? '#e0f2f1' : '#f5f5f5',
-              }}
+            {msg.role !== "system" && (
+              <div className={styles.avatarContainer}>
+                {msg.role === "user" ? (
+                  <div className={styles.userAvatar}>You</div>
+                ) : (
+                  <div className={styles.botAvatar}>🌱</div>
+                )}
+              </div>
+            )}
+            <div
+              className={`${styles.message} ${
+                msg.role === "user"
+                  ? styles.userMessage
+                  : msg.role === "system"
+                  ? styles.systemMessage
+                  : styles.botMessage
+              }`}
             >
-              <Typography variant="body1">{msg.content}</Typography>
-            </Paper>
-          </Box>
+              {msg.content}
+            </div>
+          </div>
         ))}
+
         {loading && (
-          <Box display="flex" justifyContent="center" my={1}>
-            <CircularProgress size={20} />
-            <Typography ml={1} variant="body2" color="textSecondary">
-              Bot is typing...
-            </Typography>
-          </Box>
+          <div className={`${styles.messageWrapper} ${styles.botMessageWrapper}`}>
+            <div className={styles.avatarContainer}>
+              <div className={styles.botAvatar}>🌱</div>
+            </div>
+            <div className={`${styles.message} ${styles.botMessage}`}>
+              <div className={styles.loadingIndicator}>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
         )}
         <div ref={chatEndRef} />
-      </Box>
+      </div>
 
-      <Box component="form" onSubmit={handleSubmit} display="flex" gap={1}>
-        <TextField
-          fullWidth
-          variant="outlined"
+      <form onSubmit={handleSubmit} className={styles.inputForm}>
+        <input
+          ref={inputRef}
+          type="text"
+          className={styles.inputField}
           placeholder="Ask about crop yield, fertilizers, diseases..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
-        />
-        <Button
-          variant="contained"
-          color="success"
-          type="submit"
           disabled={loading}
-        >
-          Send
-        </Button>
-      </Box>
-    </Box>
-  );
+        />
+        <button type="submit" className={styles.sendButton} disabled={loading}>
+          ➤
+        </button>
+      </form>
+    </div>
+  )
 }
 
-export default Chatbot;
+export default Chatbot

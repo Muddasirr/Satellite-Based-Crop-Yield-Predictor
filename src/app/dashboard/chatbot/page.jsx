@@ -1,15 +1,15 @@
 'use client'
 import React from 'react'
-
+import styles from "./styles/chatbot.module.css"
 import Chatbot from './chatbot'
-import { Box } from '@mui/material'
-const page = () => {
+const Page = () => {
   return (
-    <Box display={'flex'}>
-    
-     <Chatbot/>
-      </Box>
+    <div className={styles.pageContainer}>
+      <div className={styles.chatbotWrapper}>
+        <Chatbot />
+      </div>
+    </div>
   )
 }
 
-export default page
+export default Page
