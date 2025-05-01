@@ -17,10 +17,35 @@ const FieldManagement = () => {
   const [showAnalysis, setShowAnalysis] = useState(false)
   const [fieldid, setFieldId] = useState("")
   const [activeTab, setActiveTab] = useState("status")
+  const [analysis,setAnalysis]=useState("");
+  
 
   useEffect(() => {
     getfields()
-  }, [])
+    getAnalysis()
+  }, [activeTab])
+ const main = fields.filter((field) => field.id == fieldid)[0]
+  const getAnalysis = async()=>{
+    
+    const input = `Here is some data about my field:
+
+- Predicted Rice Yield: ${fields.filter((field) => field.id == fieldid)[0].prediction} kg/ha
+- Predicted Maize Yield: ${Math.floor(Math.random() * (3400 - 1700) + 1700)} kg/ha
+
+Current average prices in Pakistan:
+- Rice (retail): PKR 82 to 136 per kg; Basmati (e.g., Kainat): ~PKR 262 per kg
+- Maize (retail): PKR 87 to 186 per kg; Wholesale in Punjab: PKR 20–22/kg; in KPK: PKR 26–31/kg
+
+Demand trends in Pakistan:
+- Maize has high domestic demand (~9.1 million tons), mainly for poultry and dairy feed.
+- Rice is more export-focused and price-sensitive to international markets.
+
+Based on the predicted yields, current market prices, and demand trends within Pakistan, please provide a **clear recommendation** on whether I should grow **rice or maize**. Do **not** ask further questions—just analyze this data and give me your suggestion for what to plant for maximum profitability.`;
+const res = await fetch(`/api/chat?question=${encodeURIComponent(input)}`)
+    const data = await res.json()
+    setAnalysis(data.response)
+    console.log(data.response)
+  }
 
   const getfields = async () => {
     const response = await axios.get("/api/fields/getfield")
@@ -118,32 +143,17 @@ const FieldManagement = () => {
 
       {/* Right Panel - Field Details */}
       {showAnalysis ? (
-        <div className={styles.fieldDetails}>
+        <div style={{width:1000}} className={styles.fieldDetails}>
           <div className={styles.fieldDetailsHeader}>
             <div className={styles.fieldTitleContainer}>
               <h2 className={styles.fieldTitle}>{fields.find((f) => f.id === fieldid)?.name || "Field 1"}</h2>
               <p className={styles.fieldSubtitle}>{fields.find((f) => f.id === fieldid)?.area || "4.2"} ha, Almonds</p>
             </div>
             <div className={styles.fieldActions}>
-              <div className={styles.actionButton}>
-                <div className={styles.actionIcon}>
-                  <Download />
-                </div>
-                <span className={styles.actionText}>Prescription map</span>
-              </div>
-              <div className={styles.actionButton}>
-                <div className={styles.actionIcon}>
-                  <Download />
-                </div>
-                <span className={styles.actionText}>Soil sampling map</span>
-              </div>
-              <div className={styles.actionButton}>
-                <div className={styles.actionIcon}>
-                  <CloudUpload />
-                </div>
-                <span className={styles.actionText}>Upload data</span>
-              </div>
-              <button className={styles.moreButton}>...</button>
+              
+            
+             
+             
               <button className={styles.closeButton} onClick={() => setShowAnalysis(false)}>
                 <Close />
               </button>
@@ -157,35 +167,25 @@ const FieldManagement = () => {
             >
               Status
             </button>
-            <button
-              className={`${styles.tabButton} ${activeTab === "fieldReport" ? styles.activeTab : ""}`}
-              onClick={() => setActiveTab("fieldReport")}
-            >
-              Field report <span className={styles.proBadge}>PRO</span>
-            </button>
-            <button
-              className={`${styles.tabButton} ${activeTab === "prescriptionMaps" ? styles.activeTab : ""}`}
-              onClick={() => setActiveTab("prescriptionMaps")}
-            >
-              Prescription maps <span className={styles.proBadge}>PRO</span>
-            </button>
-            <button
-              className={`${styles.tabButton} ${activeTab === "data" ? styles.activeTab : ""}`}
-              onClick={() => setActiveTab("data")}
-            >
-              Data
-            </button>
+          
+            
             <button
               className={`${styles.tabButton} ${activeTab === "yieldAnalysis" ? styles.activeTab : ""}`}
               onClick={() => setActiveTab("yieldAnalysis")}
             >
-              Yield Analysis <span className={styles.proBadge}>PRO</span>
+              Yield Analysis <span className={styles.proBadge}>sexy</span>
             </button>
           </div>
 
-          <div className={styles.chartsContainer}>
+      { activeTab=='status' &&    <div className={styles.chartsContainer}>
             <ClimateCharts id={fieldid} open={false} handleClose={() => {}} embedded={true} />
+          </div>}
+          {
+            activeTab=='yieldAnalysis'&&
+        <div>
+          {analysis}
           </div>
+          }
         </div>
       ) : (
         <div className={styles.emptyState}>
