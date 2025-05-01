@@ -15,8 +15,8 @@ const Sidebar = () => {
   }
 
   return (
-    <Paper 
-      elevation={3} 
+    <Paper
+      elevation={3}
       sx={{
         width: "4vw", // Same as w-16 in Tailwind
         height: "100vh",
@@ -29,34 +29,20 @@ const Sidebar = () => {
       }}
     >
       {/* Logo */}
-      <Box 
-       component="img"
-      src="/logo.png"
-      onClick={()=>router.push('/dashboard/map')}
+      <Box
+        component="img"
+        src="/logo.png"
+        onClick={() => router.push('/dashboard/map')}
         sx={{
           width: "100%",
-          height: "auto",          
+          height: "auto",
         }}
       >
-        
       </Box>
 
-      {/* Menu Items */}
-      <SidebarItem icon={<Calendar size={24} />} />
-      <SidebarItem icon={<SquaresFour size={24} />} active />
-      <SidebarItem icon={<Smiley size={24} />} />
       <SidebarItem icon={<MapPin size={24} />} onClick={handlenotesclick} />
-      <SidebarItem icon={<Upload size={24} />} />
-      <SidebarItem icon={<FileText size={24} />} />
-      <SidebarItem icon={<Trash size={24} />} />
-      <SidebarItem icon={<BookOpen size={24} />} />
-      <SidebarItem icon={<Phone size={24} />} />
-      <SidebarItem icon={<User size={24} />} onClick={()=>router.push('/dashboard/chatbot')} />
-      {/* Weather Icon */}
+      <SidebarItem icon={<User size={24} />} onClick={() => router.push('/dashboard/chatbot')} />
       <SidebarItem icon={<Cloud size={24} />} onClick={handleWeatherClick} />
-      
-      
-      {/* Weather Modal */}
       <WeatherModal open={openWeather} handleClose={() => setOpenWeather(false)} />
     </Paper>
   );
