@@ -1,158 +1,204 @@
-import { useState, useEffect } from "react";
-import {
-  Box,
-  Typography,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemIcon,
-  Checkbox,
-  IconButton,
-  TextField,
-  Divider,
-  Fab,
-} from "@mui/material";
-import { ExpandMore, ExpandLess, Add, Sort } from "@mui/icons-material";
-import axios from 'axios';
-import useAuthStore from "../store/useAuthStore";
-import ClimateCharts from "./Chartsfields";
-
-
-
-
-
+"use client"
+import { useState, useEffect } from "react"
+import axios from "axios"
+import useAuthStore from "../store/useAuthStore"
+import ClimateCharts from "./Chartsfields"
+import styles from "../styles/field.module.css"
+import { ExpandMore, ExpandLess, Add, Sort, Search, Close, Download, CloudUpload } from "@mui/icons-material"
 
 const FieldManagement = () => {
-  const store = useAuthStore();
-  const setfields = store.setfields;
+  const store = useAuthStore()
+  const setfields = store.setfields
 
-  const [fields, setFields] = useState([]);
-
-  const [expanded, setExpanded] = useState(true);
-  const [selectedFields, setSelectedFields] = useState([]);
-  const [search, setSearch] = useState("");
-  const [showAnalysis,setShowAnalysis] = useState(false);
-
+  const [fields, setFields] = useState([])
+  const [expanded, setExpanded] = useState(true)
+  const [selectedFields, setSelectedFields] = useState([])
+  const [search, setSearch] = useState("")
+  const [showAnalysis, setShowAnalysis] = useState(false)
+  const [fieldid, setFieldId] = useState("")
+  const [activeTab, setActiveTab] = useState("status")
 
   useEffect(() => {
-    getfields();
-    
-  },[])
+    getfields()
+  }, [])
+
   const getfields = async () => {
-    const response = await axios.get('/api/fields/getfield');
-    console.log(response)
+    const response = await axios.get("/api/fields/getfield")
     setFields(response.data.field)
     setfields(response.data.field)
   }
- const toggleExpand = () => setExpanded(!expanded);
-const filteredFields = fields?.filter((field) =>
-    field.name.toLowerCase().includes(search.toLowerCase())
-  );
-const[fieldid,setFieldId]= useState("");
-const handleClick=(id)=>{
-setFieldId(id);
-console.log(fieldid)
-setShowAnalysis(true);
-}
+
+  const toggleExpand = () => setExpanded(!expanded)
+
+  const filteredFields = fields?.filter((field) => field.name.toLowerCase().includes(search.toLowerCase()))
+
+  const handleClick = (id) => {
+    setFieldId(id)
+    setShowAnalysis(true)
+  }
+
   return (
-    <Box width={'100%'} sx={{ display: "flex", height: "100vh", bgcolor: "#f4f4f4" }}>
-      {/* Sidebar */}
-      <Box sx={{ width: "45%", bgcolor: "white", p: 2, boxShadow: 1 }}>
-        <Typography variant="h6" fontWeight="bold">
+    <div className={styles.container}>
+      {/* Left Sidebar */}
+      <div className={styles.sidebar}>
+        <div className={styles.sidebarHeader}>
+          <div className={styles.brandContainer}>
+            <h2 className={styles.brandName}>OneSoil</h2>
+            <span className={styles.expandIcon}>▼</span>
+          </div>
+          <p className={styles.ownerText}>Owner</p>
+        </div>
 
-        </Typography>
-        <Typography variant="body2" color="gray">
-          Owner: Agro.io
-        </Typography>
+        <div className={styles.seasonContainer}>
+          <div className={styles.seasonItem}>
+            <div className={styles.seasonIcon}>
+              <span>📅</span>
+            </div>
+            <span>Season 2024</span>
+          </div>
+        </div>
 
-        <Box sx={{ mt: 2, bgcolor: "#eee", p: 1, borderRadius: 1 }}>
-          <Typography variant="body1">📅 Season 2024</Typography>
-        </Box>
+        <div className={styles.createGroupContainer}>
+          <button className={styles.createGroupBtn}>
+            <span className={styles.plusIcon}>+</span>
+            Create group
+          </button>
+        </div>
+      </div>
 
-        <Box sx={{ mt: "auto", pt: 2 }}>
-          <Typography color="primary" >
-            ➕ Create group
-          </Typography>
-        </Box>
-      </Box>
+      {/* Middle Panel - Fields List */}
+      <div className={styles.fieldsList}>
+        <div className={styles.fieldsListHeader}>
+          <h2 className={styles.seasonTitle}>Season 2024</h2>
+          <p className={styles.hectareInfo}>4.2 ha</p>
+        </div>
 
-      {/* Main Content */}
-      <Box width={'55%'} sx={{ flex: 1, bgcolor: "white", boxShadow: 1, p: 2 }}>
-        <Typography variant="h6" fontWeight="bold">
-          Season 2025
-        </Typography>
-       
+        <div className={styles.searchContainer}>
+          <div className={styles.searchInputWrapper}>
+            <Search className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className={styles.searchInput}
+            />
+          </div>
+          <button className={styles.sortButton}>
+            <span>Sort</span>
+            <Sort className={styles.sortIcon} />
+          </button>
+        </div>
 
-        {/* Search and Sort */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
-          <TextField
-            size="small"
-            variant="outlined"
-            placeholder="Search"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            sx={{ flex: 1 }}
-          />
-          <IconButton>
-            <Sort />
-          </IconButton>
-        </Box>
-
-        {/* Expandable Section */}
-        <Box sx={{ mt: 3 }}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-              mb: 1,
-            }}
-            onClick={toggleExpand}
-          >
-            {expanded ? <ExpandLess /> : <ExpandMore />}
-            <Typography variant="subtitle1" sx={{ ml: 1 }}>
-              Not activated fields
-            </Typography>
-            <Typography variant="body2" color="gray" sx={{ ml: 1 }}>
-              811.5 ha
-            </Typography>
-          </Box>
-          <Divider />
+        <div className={styles.fieldsSection}>
+          <div className={styles.fieldsSectionHeader} onClick={toggleExpand}>
+            {expanded ? <ExpandLess className={styles.expandIcon} /> : <ExpandMore className={styles.expandIcon} />}
+            <span className={styles.sectionTitle}>Not activated fields</span>
+            <span className={styles.hectareCount}>4.2 ha</span>
+          </div>
 
           {expanded && (
-            <Box sx={{ maxHeight: 400, overflowY: "auto" }}>
-              <List>
-                {filteredFields.map((field, index) => (
-                  <ListItem onClick={()=>handleClick(field.id)} key={index}>
-                    <ListItemIcon>
-                      <Box
-                        sx={{
-                          width: 30,
-                          height: 30,
-                          borderRadius: "4px",
-                          bgcolor: 'green',
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                        }}
-                      />
-                    </ListItemIcon>
-                    <ListItemText primary={field.name} secondary={`Area: ${field.area} ha`} />
-                   
-                  </ListItem>
-                ))}
-              </List>
-            </Box>
+            <div className={styles.fieldsList}>
+              {filteredFields.map((field, index) => (
+                <div key={index} className={styles.fieldItem} onClick={() => handleClick(field.id)}>
+                  <div className={styles.fieldIcon}>
+                    <div className={styles.triangleIcon}></div>
+                  </div>
+                  <div className={styles.fieldInfo}>
+                    <span className={styles.fieldName}>{field.name}</span>
+                    <span className={styles.fieldArea}>{field.area} ha</span>
+                  </div>
+                  <div className={styles.fieldCheckbox}></div>
+                </div>
+              ))}
+            </div>
           )}
-        </Box>
-      </Box>
-      {showAnalysis && <ClimateCharts id={fieldid} open={showAnalysis} handleClose={()=>setShowAnalysis(false)}/>}
+        </div>
+      </div>
 
+      {/* Right Panel - Field Details */}
+      {showAnalysis ? (
+        <div className={styles.fieldDetails}>
+          <div className={styles.fieldDetailsHeader}>
+            <div className={styles.fieldTitleContainer}>
+              <h2 className={styles.fieldTitle}>{fields.find((f) => f.id === fieldid)?.name || "Field 1"}</h2>
+              <p className={styles.fieldSubtitle}>{fields.find((f) => f.id === fieldid)?.area || "4.2"} ha, Almonds</p>
+            </div>
+            <div className={styles.fieldActions}>
+              <div className={styles.actionButton}>
+                <div className={styles.actionIcon}>
+                  <Download />
+                </div>
+                <span className={styles.actionText}>Prescription map</span>
+              </div>
+              <div className={styles.actionButton}>
+                <div className={styles.actionIcon}>
+                  <Download />
+                </div>
+                <span className={styles.actionText}>Soil sampling map</span>
+              </div>
+              <div className={styles.actionButton}>
+                <div className={styles.actionIcon}>
+                  <CloudUpload />
+                </div>
+                <span className={styles.actionText}>Upload data</span>
+              </div>
+              <button className={styles.moreButton}>...</button>
+              <button className={styles.closeButton} onClick={() => setShowAnalysis(false)}>
+                <Close />
+              </button>
+            </div>
+          </div>
 
+          <div className={styles.tabsContainer}>
+            <button
+              className={`${styles.tabButton} ${activeTab === "status" ? styles.activeTab : ""}`}
+              onClick={() => setActiveTab("status")}
+            >
+              Status
+            </button>
+            <button
+              className={`${styles.tabButton} ${activeTab === "fieldReport" ? styles.activeTab : ""}`}
+              onClick={() => setActiveTab("fieldReport")}
+            >
+              Field report <span className={styles.proBadge}>PRO</span>
+            </button>
+            <button
+              className={`${styles.tabButton} ${activeTab === "prescriptionMaps" ? styles.activeTab : ""}`}
+              onClick={() => setActiveTab("prescriptionMaps")}
+            >
+              Prescription maps <span className={styles.proBadge}>PRO</span>
+            </button>
+            <button
+              className={`${styles.tabButton} ${activeTab === "data" ? styles.activeTab : ""}`}
+              onClick={() => setActiveTab("data")}
+            >
+              Data
+            </button>
+            <button
+              className={`${styles.tabButton} ${activeTab === "yieldAnalysis" ? styles.activeTab : ""}`}
+              onClick={() => setActiveTab("yieldAnalysis")}
+            >
+              Yield Analysis <span className={styles.proBadge}>PRO</span>
+            </button>
+          </div>
 
+          <div className={styles.chartsContainer}>
+            <ClimateCharts id={fieldid} open={false} handleClose={() => {}} embedded={true} />
+          </div>
+        </div>
+      ) : (
+        <div className={styles.emptyState}>
+       
+        </div>
+      )}
 
-    </Box>
-  );
-};
+      {/* Floating Action Button */}
+      <button className={styles.fab}>
+        <Add />
+      </button>
+    </div>
+  )
+}
 
-export default FieldManagement;
+export default FieldManagement
