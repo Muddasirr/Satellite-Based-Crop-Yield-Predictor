@@ -35,7 +35,7 @@ const NotesMap = () => {
     field: "",
     noteType: "",
     comment: "",
-    image: null
+   
   });
   const [isAddingNote, setIsAddingNote] = useState(false);
 
@@ -135,6 +135,7 @@ const NotesMap = () => {
   };
 
   const addMarkers = (notes) => {
+    console.log(notes);
     if (!mapRef.current) return;
 
     // Clear existing markers
@@ -177,7 +178,7 @@ const NotesMap = () => {
       field: "",
       noteType: "",
       comment: "",
-      image: null
+    
     });
   };
 
@@ -317,7 +318,7 @@ const NotesMap = () => {
             sx={{ mb: 2 }}
           />
 
-          <Button
+          {/* <Button
             variant="outlined"
             component="label"
             fullWidth
@@ -333,7 +334,7 @@ const NotesMap = () => {
                 image: e.target.files?.[0] || null
               })}
             />
-          </Button>
+          </Button> */}
 
           <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 1 }}>
             <Button onClick={() => setOpenNoteModal(false)}>
