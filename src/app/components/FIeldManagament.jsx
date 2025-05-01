@@ -36,26 +36,24 @@ const FieldManagement = () => {
 
   useEffect(() => {
     getfields();
-  }, [])
-
+    
+  },[])
   const getfields = async () => {
     const response = await axios.get('/api/fields/getfield');
-
+    console.log(response)
     setFields(response.data.field)
     setfields(response.data.field)
   }
-  const toggleExpand = () => setExpanded(!expanded);
-
-  const handleSelect = (id) => {
-    setSelectedFields((prev) =>
-      prev.includes(id) ? prev.filter((fieldId) => fieldId !== id) : [...prev, id]
-    );
-  };
-
-  const filteredFields = fields?.filter((field) =>
+ const toggleExpand = () => setExpanded(!expanded);
+const filteredFields = fields?.filter((field) =>
     field.name.toLowerCase().includes(search.toLowerCase())
   );
-
+const[fieldid,setFieldId]= useState("");
+const handleClick=(id)=>{
+setFieldId(id);
+console.log(fieldid)
+setShowAnalysis(true);
+}
   return (
     <Box width={'100%'} sx={{ display: "flex", height: "100vh", bgcolor: "#f4f4f4" }}>
       {/* Sidebar */}
@@ -81,11 +79,9 @@ const FieldManagement = () => {
       {/* Main Content */}
       <Box width={'55%'} sx={{ flex: 1, bgcolor: "white", boxShadow: 1, p: 2 }}>
         <Typography variant="h6" fontWeight="bold">
-          Season 2024
+          Season 2025
         </Typography>
-        <Typography variant="body2" color="gray">
-          811.5 ha
-        </Typography>
+       
 
         {/* Search and Sort */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 2 }}>
@@ -121,14 +117,13 @@ const FieldManagement = () => {
               811.5 ha
             </Typography>
           </Box>
-
           <Divider />
 
           {expanded && (
             <Box sx={{ maxHeight: 400, overflowY: "auto" }}>
               <List>
                 {filteredFields.map((field, index) => (
-                  <ListItem onClick={()=>setShowAnalysis(true)} key={index}>
+                  <ListItem onClick={()=>handleClick(field.id)} key={index}>
                     <ListItemIcon>
                       <Box
                         sx={{
@@ -143,10 +138,7 @@ const FieldManagement = () => {
                       />
                     </ListItemIcon>
                     <ListItemText primary={field.name} secondary={`Area: ${field.area} ha`} />
-                    <Checkbox
-                      checked={selectedFields.includes(field.id)}
-                      onChange={() => handleSelect(field.id)}
-                    />
+                   
                   </ListItem>
                 ))}
               </List>
@@ -154,7 +146,7 @@ const FieldManagement = () => {
           )}
         </Box>
       </Box>
-      {showAnalysis && <ClimateCharts open={showAnalysis} setOpen={()=>setShowAnalysis(false)}/>}
+      {showAnalysis && <ClimateCharts id={fieldid} open={showAnalysis} handleClose={()=>setShowAnalysis(false)}/>}
 
 
 

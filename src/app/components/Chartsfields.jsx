@@ -9,8 +9,14 @@ import {
   AreaChart,
   Area,
   CartesianGrid,
+ 
 } from "recharts";
-import { Modal } from "@mui/material";
+import {
+  Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, Paper,Dialog
+} from '@mui/material';
+
+import useAuthStore from "../store/useAuthStore";
 const ndviData = [
   { month: "Jan", value: 0.1 },
   { month: "Feb", value: 0.12 },
@@ -56,13 +62,33 @@ const degreeDaysData = [
   { month: "Dec", value: 4792 },
 ];
 
+
 const ClimateCharts = (props) => {
+  const store = useAuthStore();
+  const fields = store.fields;
+
+  console.log(fields.filter((field)=>field.id==props.id));
   return (
-    <Modal onClose={props.setOpen(false)}>
+      <Dialog 
+          open={props.open} 
+          onClose={props.handleClose} 
+          fullWidth 
+          maxWidth="md"
+          PaperProps={{
+            style: {
+              borderRadius: '16px',
+              overflow: 'hidden',
+              backgroundColor: '#f5f7fa',
+            }
+          }}
+        >
+    <FieldTable fields={fields.filter((field)=>field.id==props.id)} />
     <div className="p-4">
-   
+
       <h3 className="mb-2 text-lg font-semibold">NDVI</h3>
+      
       <ResponsiveContainer width="100%" height={150}>
+
         <LineChart data={ndviData}>
           <XAxis dataKey="month" />
           <YAxis domain={[-0.35, 1.05]} />
@@ -123,7 +149,39 @@ const ClimateCharts = (props) => {
         </AreaChart>
       </ResponsiveContainer>
     </div>
-    </Modal>
+   
+    </Dialog>
   );
 }
 export default ClimateCharts;
+
+
+
+function FieldTable({fields}) {
+  return (
+    <TableContainer component={Paper}>
+      <Table aria-label="field table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Name</TableCell>
+            <TableCell align="right">Latitude</TableCell>
+            <TableCell align="right">Longitude</TableCell>
+            <TableCell align="right">Area</TableCell>
+            <TableCell align="right">Prediction</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {fields.map((row, index) => (
+            <TableRow key={index}>
+              <TableCell>{row.name}</TableCell>
+              <TableCell align="right">{row.lat}</TableCell>
+              <TableCell align="right">{row.long}</TableCell>
+              <TableCell align="right">{row.area}</TableCell>
+              <TableCell align="right">{row.prediction}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
+  );
+}
