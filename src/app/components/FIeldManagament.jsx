@@ -4,7 +4,39 @@ import axios from "axios"
 import useAuthStore from "../store/useAuthStore"
 import ClimateCharts from "./Chartsfields"
 import styles from "../styles/field.module.css"
-import { ExpandMore, ExpandLess, Add, Sort, Search, Close, Download, CloudUpload } from "@mui/icons-material"
+import {
+  ExpandMore,
+  ExpandLess,
+  Add,
+  Sort,
+  Search,
+  Close,
+  TrendingUp,
+  Agriculture,
+  AttachMoney,
+  Assessment,
+  LocationOn,
+  Info,
+  Map,
+  
+} from "@mui/icons-material"
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  Box,
+} from "@mui/material";
+import InfoIcon from "@mui/icons-material/Info";
+import MapIcon from "@mui/icons-material/Map";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+
 
 const FieldManagement = () => {
   const store = useAuthStore()
@@ -17,19 +49,27 @@ const FieldManagement = () => {
   const [showAnalysis, setShowAnalysis] = useState(false)
   const [fieldid, setFieldId] = useState("")
   const [activeTab, setActiveTab] = useState("status")
-  const [analysis,setAnalysis]=useState("");
-  
+  const [analysis, setAnalysis] = useState("")
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     getfields()
-    getAnalysis()
-  }, [activeTab])
- const main = fields.filter((field) => field.id == fieldid)[0]
-  const getAnalysis = async()=>{
-    
+  }, [])
+
+  useEffect(() => {
+    if (activeTab === "yieldAnalysis" && fieldid) {
+      getAnalysis()
+    }
+  }, [activeTab, fieldid])
+
+  const getAnalysis = async () => {
+    setLoading(true)
+    const selectedField = fields.find((field) => field.id === fieldid) || { prediction: "2500" }
+    console.log("Selected Field:", selectedField)
+
     const input = `Here is some data about my field:
 
-- Predicted Rice Yield: ${fields.filter((field) => field.id == fieldid)[0].prediction} kg/ha
+- Predicted Rice Yield: ${selectedField.prediction} kg/ha
 - Predicted Maize Yield: ${Math.floor(Math.random() * (3400 - 1700) + 1700)} kg/ha
 
 Current average prices in Pakistan:
@@ -40,11 +80,18 @@ Demand trends in Pakistan:
 - Maize has high domestic demand (~9.1 million tons), mainly for poultry and dairy feed.
 - Rice is more export-focused and price-sensitive to international markets.
 
-Based on the predicted yields, current market prices, and demand trends within Pakistan, please provide a **clear recommendation** on whether I should grow **rice or maize**. Do **not** ask further questions—just analyze this data and give me your suggestion for what to plant for maximum profitability.`;
-const res = await fetch(`/api/chat?question=${encodeURIComponent(input)}`)
-    const data = await res.json()
-    setAnalysis(data.response)
-    console.log(data.response)
+Based on the predicted yields, current market prices, and demand trends within Pakistan, please provide a **clear recommendation** on whether I should grow **rice or maize**. Do **not** ask further questions—just analyze this data and give me your suggestion for what to plant for maximum profitability.`
+
+    try {
+      const res = await fetch(`/api/chat?question=${encodeURIComponent(input)}`)
+      const data = await res.json()
+      setAnalysis(data.response)
+    } catch (error) {
+      console.error("Error fetching analysis:", error)
+      setAnalysis("Failed to load yield analysis. Please try again later.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   const getfields = async () => {
@@ -61,6 +108,46 @@ const res = await fetch(`/api/chat?question=${encodeURIComponent(input)}`)
     setFieldId(id)
     setShowAnalysis(true)
   }
+
+  // Function to extract key metrics from analysis text
+  const extractMetrics = () => {
+    const metrics = {
+      recommendedCrop: "Unknown",
+      profitability: analysis.match(/PKR\s+[\d,]+(\.\d+)?/g)?.[0] || "Varies by market conditions",
+      confidence: analysis.includes("strongly recommend") ? "High" : analysis.includes("recommend") ? "Medium" : "Low",
+    }
+
+    // Better detection of crop recommendations
+    if (
+      analysis.includes("you should grow maize") ||
+      analysis.includes("recommend maize") ||
+      analysis.includes("maize is recommended") ||
+      analysis.includes("choose maize") ||
+      (analysis.includes("maize") && !analysis.includes("rice") && analysis.includes("recommend"))
+    ) {
+      metrics.recommendedCrop = "Maize"
+    } else if (
+      analysis.includes("you should grow rice") ||
+      analysis.includes("recommend rice") ||
+      analysis.includes("rice is recommended") ||
+      analysis.includes("choose rice") ||
+      (analysis.includes("rice") && !analysis.includes("maize") && analysis.includes("recommend"))
+    ) {
+      metrics.recommendedCrop = "Rice"
+    } else if (analysis.includes("both crops") || analysis.includes("either crop")) {
+      metrics.recommendedCrop = "Both crops viable"
+    } else if (analysis.toLowerCase().includes("maize") && !analysis.toLowerCase().includes("rice")) {
+      // If only maize is mentioned (and not rice), likely recommending maize
+      metrics.recommendedCrop = "Maize"
+    } else if (analysis.toLowerCase().includes("rice") && !analysis.toLowerCase().includes("maize")) {
+      // If only rice is mentioned (and not maize), likely recommending rice
+      metrics.recommendedCrop = "Rice"
+    }
+
+    return metrics
+  }
+
+  const metrics = extractMetrics()
 
   return (
     <div className={styles.container}>
@@ -79,7 +166,7 @@ const res = await fetch(`/api/chat?question=${encodeURIComponent(input)}`)
             <div className={styles.seasonIcon}>
               <span>📅</span>
             </div>
-            <span>Season 2024</span>
+            <span>Season 2025</span>
           </div>
         </div>
 
@@ -142,18 +229,14 @@ const res = await fetch(`/api/chat?question=${encodeURIComponent(input)}`)
       </div>
 
       {/* Right Panel - Field Details */}
-      {showAnalysis ? (
-        <div style={{width:1000}} className={styles.fieldDetails}>
+      {showAnalysis && (
+        <div style={{ width: 500 }} className={styles.fieldDetails}>
           <div className={styles.fieldDetailsHeader}>
             <div className={styles.fieldTitleContainer}>
               <h2 className={styles.fieldTitle}>{fields.find((f) => f.id === fieldid)?.name || "Field 1"}</h2>
-              <p className={styles.fieldSubtitle}>{fields.find((f) => f.id === fieldid)?.area || "4.2"} ha, Almonds</p>
+              <p className={styles.fieldSubtitle}>{fields.find((f) => f.id === fieldid)?.area || "4.2"} ha</p>
             </div>
             <div className={styles.fieldActions}>
-              
-            
-             
-             
               <button className={styles.closeButton} onClick={() => setShowAnalysis(false)}>
                 <Close />
               </button>
@@ -167,29 +250,188 @@ const res = await fetch(`/api/chat?question=${encodeURIComponent(input)}`)
             >
               Status
             </button>
-          
-            
+            <button
+              className={`${styles.tabButton} ${activeTab === "fieldDetails" ? styles.activeTab : ""}`}
+              onClick={() => setActiveTab("fieldDetails")}
+            >
+              Field Details <span className={styles.proBadge}>NEW</span>
+            </button>
             <button
               className={`${styles.tabButton} ${activeTab === "yieldAnalysis" ? styles.activeTab : ""}`}
               onClick={() => setActiveTab("yieldAnalysis")}
             >
-              Yield Analysis <span className={styles.proBadge}>sexy</span>
+              Yield Analysis <span className={styles.proBadge}>PRO</span>
             </button>
           </div>
 
-      { activeTab=='status' &&    <div className={styles.chartsContainer}>
-            <ClimateCharts id={fieldid} open={false} handleClose={() => {}} embedded={true} />
-          </div>}
-          {
-            activeTab=='yieldAnalysis'&&
-        <div>
-          {analysis}
-          </div>
-          }
-        </div>
-      ) : (
-        <div className={styles.emptyState}>
-       
+          {activeTab === "status" && (
+            <div className={styles.chartsContainer}>
+              <ClimateCharts id={fieldid} open={false} handleClose={() => {}} embedded={true} />
+            </div>
+          )}
+
+{activeTab === "fieldDetails" && (
+  <Box sx={{ p: 3 }}>
+    <Typography variant="h5" sx={{ color: "green", mb: 2 }}>
+      <InfoIcon sx={{ verticalAlign: "middle", mr: 1 }} />
+      Field Details
+    </Typography>
+
+    <TableContainer component={Paper} sx={{ mb: 4 }}>
+      <Table>
+        <TableHead>
+          <TableRow sx={{ backgroundColor: "#e8f5e9" }}>
+            <TableCell colSpan={2}>
+              <Typography variant="subtitle1" fontWeight="bold" sx={{ color: "green" }}>
+                <InfoIcon fontSize="small" sx={{ mr: 1 }} />
+                Basic Info
+              </Typography>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            <TableCell>🌾 Field Name</TableCell>
+            <TableCell>{fields.find((f) => f.id === fieldid)?.name || "Unknown"}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>📐 Area (ha)</TableCell>
+            <TableCell>{fields.find((f) => f.id === fieldid)?.area || "0"}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>🆔 Field ID</TableCell>
+            <TableCell>{fieldid}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>📅 Created Date</TableCell>
+            <TableCell>
+              {fields.find((f) => f.id === fieldid)?.created_at
+                ? new Date(fields.find((f) => f.id === fieldid)?.created_at).toLocaleDateString()
+                : "Unknown"}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+
+    <TableContainer component={Paper} sx={{ mb: 4 }}>
+      <Table>
+        <TableHead>
+          <TableRow sx={{ backgroundColor: "#e8f5e9" }}>
+            <TableCell colSpan={2}>
+              <Typography variant="subtitle1" fontWeight="bold" sx={{ color: "green" }}>
+                <LocationOnIcon fontSize="small" sx={{ mr: 1 }} />
+                Location Info
+              </Typography>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            <TableCell>🧭 Latitude</TableCell>
+            <TableCell>{fields.find((f) => f.id === fieldid)?.lat || "N/A"}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>🧭 Longitude</TableCell>
+            <TableCell>{fields.find((f) => f.id === fieldid)?.long || "N/A"}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell>🗺️ Coordinates</TableCell>
+            <TableCell>
+              <MapIcon sx={{ verticalAlign: "middle", mr: 1 }} />
+              {fields.find((f) => f.id === fieldid)?.lat?.toFixed(4) || "0.0000"}°N,&nbsp;
+              {fields.find((f) => f.id === fieldid)?.long?.toFixed(4) || "0.0000"}°E
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+
+    <TableContainer component={Paper}>
+      <Table>
+        <TableHead>
+          <TableRow sx={{ backgroundColor: "#e8f5e9" }}>
+            <TableCell colSpan={2}>
+              <Typography variant="subtitle1" fontWeight="bold" sx={{ color: "green" }}>
+                <TrendingUpIcon fontSize="small" sx={{ mr: 1 }} />
+                Yield Prediction
+              </Typography>
+            </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            <TableCell>📊 Prediction (kg/ha)</TableCell>
+            <TableCell sx={{ fontWeight: "bold", color: "darkgreen" }}>
+              {fields.find((f) => f.id === fieldid)?.prediction || "0"}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+    </TableContainer>
+  </Box>
+)}
+
+
+
+          {activeTab === "yieldAnalysis" && (
+            <div className={styles.yieldAnalysisContainer}>
+              {loading ? (
+                <div className={styles.analysisLoading}>
+                  <div className={styles.loadingSpinner}></div>
+                  <p>Generating yield analysis...</p>
+                </div>
+              ) : (
+                <>
+                  <div className={styles.yieldMetricsGrid}>
+                    <div className={styles.yieldMetricCard}>
+                      <div className={styles.metricIconContainer}>
+                        <Agriculture className={styles.metricIcon} />
+                      </div>
+                      <div className={styles.metricContent}>
+                        <h3 className={styles.metricTitle}>Recommended Crop</h3>
+                        <p className={styles.metricValue}>{metrics.recommendedCrop}</p>
+                      </div>
+                    </div>
+
+                    <div className={styles.yieldMetricCard}>
+                      <div className={styles.metricIconContainer}>
+                        <AttachMoney className={styles.metricIcon} />
+                      </div>
+                      <div className={styles.metricContent}>
+                        <h3 className={styles.metricTitle}>Est. Profitability</h3>
+                        <p className={styles.metricValue}>{metrics.profitability}</p>
+                      </div>
+                    </div>
+
+                    <div className={styles.yieldMetricCard}>
+                      <div className={styles.metricIconContainer}>
+                        <Assessment className={styles.metricIcon} />
+                      </div>
+                      <div className={styles.metricContent}>
+                        <h3 className={styles.metricTitle}>Confidence Level</h3>
+                        <p className={styles.metricValue}>{metrics.confidence}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={styles.analysisReport}>
+                    <div className={styles.analysisReportHeader}>
+                      <TrendingUp className={styles.analysisReportIcon} />
+                      <h3 className={styles.analysisReportTitle}>Detailed Yield Analysis</h3>
+                    </div>
+                    <div className={styles.analysisReportContent}>
+                      {analysis.split("\n\n").map((paragraph, index) => (
+                        <p key={index} className={styles.analysisParagraph}>
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
         </div>
       )}
 
