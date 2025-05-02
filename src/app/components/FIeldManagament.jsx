@@ -23,8 +23,10 @@ const FieldManagement = () => {
   useEffect(() => {
     getfields()
     getAnalysis()
+    console.log(main)
   }, [activeTab])
  const main = fields.filter((field) => field.id == fieldid)[0]
+ 
   const getAnalysis = async()=>{
     
     const input = `Here is some data about my field:
@@ -79,16 +81,11 @@ const res = await fetch(`/api/chat?question=${encodeURIComponent(input)}`)
             <div className={styles.seasonIcon}>
               <span>📅</span>
             </div>
-            <span>Season 2024</span>
+            <span>Season 2025</span>
           </div>
         </div>
 
-        <div className={styles.createGroupContainer}>
-          <button className={styles.createGroupBtn}>
-            <span className={styles.plusIcon}>+</span>
-            Create group
-          </button>
-        </div>
+       
       </div>
 
       {/* Middle Panel - Fields List */}
