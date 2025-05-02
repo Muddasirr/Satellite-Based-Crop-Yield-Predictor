@@ -2,7 +2,7 @@
 .container {
     display: flex;
     height: 100vh;
-    width: 1000;
+    width: 100%;
     background-color: #f5f7fa;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
       "Helvetica Neue", sans-serif;
@@ -377,8 +377,8 @@
   }
   
   .emptyState {
-    width: 0px;
-    display: hidden;
+    flex: 1;
+    display: flex;
     align-items: center;
     justify-content: center;
     color: #666;
@@ -477,6 +477,139 @@
     padding: 16px;
   }
   
+  /* Yield Analysis Styling */
+  .yieldAnalysisContainer {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .yieldMetricsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 10px;
+  }
+  
+  .yieldMetricCard {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .yieldMetricCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  }
+  
+  .metricIconContainer {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background-color: #f0f7f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .metricIcon {
+    color: #2e7d32;
+    font-size: 24px;
+  }
+  
+  .metricContent {
+    flex: 1;
+  }
+  
+  .metricTitle {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 4px 0;
+    font-weight: 500;
+  }
+  
+  .metricValue {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #2e7d32;
+  }
+  
+  .analysisReport {
+    background-color: white;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+  }
+  
+  .analysisReportHeader {
+    padding: 16px 20px;
+    background-color: #f0f7f0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .analysisReportIcon {
+    color: #2e7d32;
+  }
+  
+  .analysisReportTitle {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    color: #2e7d32;
+  }
+  
+  .analysisReportContent {
+    padding: 20px;
+  }
+  
+  .analysisParagraph {
+    margin: 0 0 16px 0;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #333;
+  }
+  
+  .analysisParagraph:last-child {
+    margin-bottom: 0;
+  }
+  
+  .analysisLoading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    gap: 16px;
+  }
+  
+  .loadingSpinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f0f7f0;
+    border-top: 3px solid #2e7d32;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
   /* Responsive Design */
   @media (max-width: 1200px) {
     .sidebar {
@@ -485,6 +618,10 @@
   
     .fieldsList {
       width: 320px;
+    }
+  
+    .yieldMetricsGrid {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     }
   }
   
@@ -510,5 +647,239 @@
     .fieldDetails {
       flex: 1;
     }
+  
+    .yieldMetricsGrid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  
+  .fieldDetailsWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    padding: 20px;
   }
   
+  .fieldCard {
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 24px;
+    transition: all 0.3s ease;
+  }
+  
+  .fieldCard.elevation-1 {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+  
+  .fieldCard.elevation-2 {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .fieldCardHeader {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  
+  .iconCircle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+  }
+  
+  .fieldCardTitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+  }
+  
+  .fieldCardSubtitle {
+    font-size: 14px;
+    color: #666;
+    margin: 4px 0 0;
+  }
+  
+  .fieldCardContent {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .infoGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  
+  .infoItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .infoIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-top: 2px;
+  }
+  
+  .fieldLabel {
+    color: #666;
+    font-size: 14px;
+    margin: 0 0 2px;
+  }
+  
+  .fieldValue {
+    color: #333;
+    font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+  }
+  
+  .fieldValue.code {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 14px;
+    color: #555;
+  }
+  
+  .mapPreview {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin-top: 8px;
+  }
+  
+  .mapIcon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background-color: #e8f5e9;
+    border-radius: 50%;
+  }
+  
+  .coordinatesText {
+    flex: 1;
+    font-size: 14px;
+    color: #555;
+    font-family: 'Roboto Mono', monospace;
+  }
+  
+  .viewMapButton {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: none;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .viewMapButton:hover {
+    background-color: #dcedc8;
+  }
+  
+  .predictionSummary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .predictionDisplay {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  
+  .predictionNumber {
+    font-size: 32px;
+    font-weight: 700;
+    color: #222;
+  }
+  
+  .predictionUnit {
+    font-size: 16px;
+    color: #666;
+  }
+  
+  .statusBadge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  .predictionVisualization {
+    margin: 20px 0;
+  }
+  
+  .predictionBar {
+    height: 12px;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .predictionFill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.5s ease-in-out;
+  }
+  
+  .predictionScale {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #999;
+    margin-top: 6px;
+  }
+  
+  .predictionFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+  }
+  
+  .refreshButton {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background-color: #f5f5f5;
+    color: #333;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .refreshButton:hover {
+    background-color: #eeeeee;
+  }
+  
+  .predictionDate {
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    color: #666;
+  }
