@@ -4,7 +4,7 @@ export default async function handler(req, res) {
   
   if (req.method === 'POST') {
     const { name, type, description, lat, long } = req.body;
-
+    console.log(req.body)
     if (!name || !type || !lat || !long) {
       return res.status(400).json({ error: 'Missing required field' });
     }
