@@ -9,12 +9,15 @@ import axios from "axios";
 import * as turf from "@turf/turf";
 import "mapbox-gl/dist/mapbox-gl.css";
 import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
+import useAuthStore from "../../store/useAuthStore";
+import Loader from "../../components/Loader";
 
 const ShowMap = () => {
+  const { setfields } = useAuthStore();
   const mapContainerRef = useRef(null);
   const mapRef = useRef();
   const drawRef = useRef();
-
+  const [loading, setLoading] = useState(false);
   const [drawingMode, setDrawingMode] = useState(false);
   const [fieldName, setFieldName] = useState("");
   const [openNameModal, setOpenNameModal] = useState(false);
@@ -37,8 +40,10 @@ const ShowMap = () => {
 
   const addField = async (data) => {
     try {
-      await axios.post("/api/fields/createfield", data);
-      alert("Field Created Successfully");
+    const response =  await axios.post("/api/fields/createfield", data);
+    alert("Field Created Successfully");
+    return response;
+     
     } catch (error) {
       console.error(error);
       alert("Failed to create field");
@@ -67,10 +72,21 @@ const ShowMap = () => {
   };
 
   const confirmCreateField = async () => {
-    await addField(newFieldData);
-    drawRef.current.deleteAll();
     setOpenConfirmModal(false);
     setDrawingMode(false);
+    setLoading(true); // Start loader
+  
+    try {
+      const response = await addField(newFieldData);
+      const fields = response.data.data.data;
+      setfields(fields);
+      drawRef.current.deleteAll();
+    } catch (err) {
+      console.error("Error adding field:", err);
+      setError(err.message || "Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const cancelCreateField = () => {
@@ -129,7 +145,7 @@ const ShowMap = () => {
     });
 
     return () => mapRef.current.remove();
-  }, [drawingMode, fieldName]);
+  }, [drawingMode]);
 
   const startFieldCreation = () => {
     setOpenNameModal(true);
@@ -137,6 +153,7 @@ const ShowMap = () => {
 
   return (
     <>
+    {loading && <Loader/>}
       <Box ref={mapContainerRef} sx={{ width: "100%", height: "100vh", position: "relative" }} />
 
       <Fab
