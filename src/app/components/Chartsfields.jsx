@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from "react"
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area,  CartesianGrid,
+  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, AreaChart, Area, CartesianGrid,
   Legend
 } from "recharts"
 import { format, fromUnixTime } from "date-fns";
@@ -12,6 +12,7 @@ import {
   Typography
 } from "@mui/material"
 import { Download } from "@mui/icons-material"
+import FieldTable from "./FieldTable";
 import useAuthStore from "../store/useAuthStore"
 import styles from "../styles/field.module.css"
 import axios from "axios"
@@ -46,7 +47,7 @@ const ClimateCharts = (props) => {
   const [error, setError] = useState(null)
   const [weather, setWeather] = useState();
   const apiKey = "56811987bfa156cfa0f0502335732dc5";
-  const [forecast,setForecast]=useState();
+  const [forecast, setForecast] = useState();
   const [chartData, setChartData] = useState([]);
 
   const getLocationName = async (longitude, latitude) => {
@@ -62,21 +63,37 @@ const ClimateCharts = (props) => {
       return "Error fetching location";
     }
   };
-  
-  const fetchWeather = async () => {
-    const location = await getLocationName(field.long,field.lat);
-    console.log("location",location)
-    const weatherResponse = await axios.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${location}&units=metric&appid=${apiKey}`
-    );
-    setWeather(weatherResponse.data)
-    
-    const forecastResponse = await axios.get(
-      `https://api.openweathermap.org/data/2.5/forecast?q=${location}&units=metric&appid=${apiKey}`
-    );
 
- const chartTempData = forecastResponse?.data.list
-        .filter((_, index) => index < 8) // Next 24 hours (3-hour intervals)
+  const fetchWeather = async () => {
+    try {
+      if (!field?.lat || !field?.long) {
+        console.error("Invalid field coordinates:", field);
+        alert("Missing field coordinates. Cannot fetch weather data.");
+        return;
+      }
+
+      const location = await getLocationName(field.long, field.lat);
+      console.log("Resolved location:", location);
+
+      if (!location) {
+        console.error("Could not determine location from coordinates.");
+        alert("Unable to resolve location name from coordinates.");
+        return;
+      }
+
+      const forecastResponse = await axios.get(
+       `https://api.openweathermap.org/data/2.5/forecast?lat=${field.lat}&lon=${field.long}&units=metric&appid=${apiKey}`
+      );
+
+      const forecastList = forecastResponse?.data?.list;
+      if (!Array.isArray(forecastList)) {
+        console.error("Unexpected forecast data format:", forecastResponse?.data);
+        alert("Received invalid weather forecast data.");
+        return;
+      }
+
+      const chartTempData = forecastList
+        .slice(0, 8)
         .map((item) => ({
           time: format(new Date(item.dt_txt), 'h a'),
           date: format(new Date(item.dt_txt), 'MMM d'),
@@ -85,10 +102,17 @@ const ClimateCharts = (props) => {
           feels_like: Math.round(item.main.feels_like),
           pressure: item.main.pressure,
         }));
+
       setChartData(chartTempData);
-  }
+    } catch (error) {
+      console.error("Error fetching weather data:", error.message || error);
+      setChartData([]);
+    }
+  };
+
+
   useEffect(() => {
-    
+
     fetchWeather();
 
 
@@ -105,7 +129,7 @@ const ClimateCharts = (props) => {
       const endDate = "20231231"
       const url = `https://power.larc.nasa.gov/api/temporal/daily/point?start=${startDate}&end=${endDate}&latitude=${field.lat}&longitude=${field.long}&parameters=PRECTOTCORR&format=JSON&community=AG`
 
-   
+
 
       try {
         const response = await fetch(url)
@@ -116,7 +140,7 @@ const ClimateCharts = (props) => {
         }
 
         const data = await response.json()
-       
+
 
         const dailyData = data?.properties?.parameter?.PRECTOTCORR
         if (!dailyData) {
@@ -125,7 +149,7 @@ const ClimateCharts = (props) => {
           throw new Error(errorMsg)
         }
 
-        
+
 
         const monthlyTotals = {}
         for (const dateStr in dailyData) {
@@ -139,7 +163,7 @@ const ClimateCharts = (props) => {
           value: parseFloat((monthlyTotals[month] || 0).toFixed(2)),
         }))
 
-        
+
         setPrecipitationData(precipitationArray)
       } catch (err) {
         console.error("Error in fetchPrecipitationData:", err)
@@ -154,83 +178,63 @@ const ClimateCharts = (props) => {
 
 
   const renderChartContent = () => {
-  
+
     return (
       <>
-        {/* NDVI Chart
-        <div className={styles.chartCard}>
-          <div className={styles.chartHeader}>
-            <h3 className={styles.chartTitle}>NDVI</h3>
-            <button className={styles.downloadButton}><Download /></button>
-          </div>
-          <div className={styles.chartContent}>
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={chartData}>
-                <XAxis dataKey="month" />
-                <YAxis domain={[-0.35, 1.05]} />
-                <Tooltip />
-                <Line type="monotone" dataKey="value" stroke="#ff5722" strokeWidth={2} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-            <div className={styles.ndviValue}>
-              <div className={styles.valueBox}>0.66</div>
-              <div className={styles.valueInfo}>Last updated 125 days ago</div>
-            </div>
-          </div>
-        </div> */}
- {/* Temperature Chart */}
- <Box sx={{ 
-                  backgroundColor: 'rgba(255, 255, 255, 0.15)',
-                  borderRadius: '12px',
-                  p: 2,
-                  mb: 3,
-                  backdropFilter: 'blur(5px)',
-                }}>
-               {chartData && chartData.length > 0 && (
-  <Typography variant="subtitle1" sx={{ mb: 2 }}>
-    24 Hour Forecast - {chartData[0].date}
-  </Typography>
-)}
 
-                  <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={chartData}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.2)" />
-                      <XAxis 
-                        dataKey="time" 
-                        tick={{ fill: 'rgba(255, 255, 255, 0.8)' }}
-                      />
-                      <YAxis 
-                        tick={{ fill: 'rgba(255, 255, 255, 0.8)' }}
-                      />
-                      <Tooltip 
-                        contentStyle={{
-                          backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                          border: 'none',
-                          borderRadius: '8px'
-                        }}
-                      />
-                      <Legend />
-                      <Line 
-                        name="Temperature (°C)"
-                        type="monotone" 
-                        dataKey="temp" 
-                        stroke="#ffcc33" 
-                        strokeWidth={2}
-                        dot={{ r: 3 }}
-                        activeDot={{ r: 5 }}
-                      />
-                      <Line 
-                        name="Feels Like (°C)"
-                        type="monotone" 
-                        dataKey="feels_like" 
-                        stroke="#ff6666" 
-                        strokeWidth={2}
-                        dot={{ r: 3 }}
-                        activeDot={{ r: 5 }}
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </Box>
+        {/* Temperature Chart */}
+        <Box sx={{
+          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          borderRadius: '12px',
+          p: 2,
+          mb: 3,
+          backdropFilter: 'blur(5px)',
+        }}>
+          {chartData && chartData.length > 0 && (
+            <Typography variant="subtitle1" sx={{ mb: 2 }}>
+              24 Hour Forecast - {chartData[0].date}
+            </Typography>
+          )}
+
+          {(!Array.isArray(chartData) || chartData.length === 0) ? (<div>Temperature Data Not Available</div>) : <ResponsiveContainer width="100%" height={200}>
+            <LineChart data={chartData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.2)" />
+              <XAxis
+                dataKey="time"
+                tick={{ fill: 'rgba(255, 255, 255, 0.8)' }}
+              />
+              <YAxis
+                tick={{ fill: 'rgba(255, 255, 255, 0.8)' }}
+              />
+              <Tooltip
+                contentStyle={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                  border: 'none',
+                  borderRadius: '8px'
+                }}
+              />
+              <Legend />
+              <Line
+                name="Temperature (°C)"
+                type="monotone"
+                dataKey="temp"
+                stroke="#ffcc33"
+                strokeWidth={2}
+                dot={{ r: 3 }}
+                activeDot={{ r: 5 }}
+              />
+              <Line
+                name="Feels Like (°C)"
+                type="monotone"
+                dataKey="feels_like"
+                stroke="#ff6666"
+                strokeWidth={2}
+                dot={{ r: 3 }}
+                activeDot={{ r: 5 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>}
+        </Box>
         {/* Precipitation Chart */}
         <div className={styles.chartCard}>
           <div className={styles.chartHeader}>
@@ -334,32 +338,6 @@ const ClimateCharts = (props) => {
   )
 }
 
-function FieldTable({ fields }) {
-  console.log("Rendering FieldTable with fields:", fields)
-  return (
-    <TableContainer component={Paper}>
-      <Table aria-label="field table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Name</TableCell>
-            <TableCell>Latitude</TableCell>
-            <TableCell>Longitude</TableCell>
-            <TableCell>Area</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {fields.map((field) => (
-            <TableRow key={field.id}>
-              <TableCell>{field.name}</TableCell>
-              <TableCell>{field.lat}</TableCell>
-              <TableCell>{field.long}</TableCell>
-              <TableCell>{field.area} ha</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-  )
-}
+
 
 export default ClimateCharts

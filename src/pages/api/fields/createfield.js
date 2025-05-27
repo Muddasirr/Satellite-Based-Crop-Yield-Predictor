@@ -9,7 +9,7 @@ export default async function handler(req, res) {
    
       const location = locationName.split(',')[0].trim(); // simple cleanup
       const response = await axios.post(
-        `http://192.168.5.104:8000/predict/?long=${Number(long)}&lat=${Number(lat)}&name=${location}&year=2024`
+        `http:///127.0.0.1:8000/predict/?long=${Number(long)}&lat=${Number(lat)}&name=${location}&year=2024`
       );
 
       const prediction = response.data.prediction;
@@ -30,8 +30,11 @@ export default async function handler(req, res) {
         console.error('Supabase insert error:', error);
         return res.status(400).json({ message: 'Insert failed', error });
       }
+      
+      const fields = await supabase.from('Fields').select('*');
 
-      return res.status(200).json({ message: 'Insert successful', data });
+
+      return res.status(200).json({ message: 'Insert successful', data:fields});
     } catch (err) {
       console.error('Internal server error:', err);
       return res.status(500).json({ message: 'Internal Server Error', error: err.message });
