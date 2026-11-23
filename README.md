@@ -1,85 +1,85 @@
-![Satellite-Based-Crop-Yield-Predictor](https://socialify.git.ci/Muddasirr/Satellite-Based-Crop-Yield-Predictor/image?custom_description=Predict.+Plan.+Prosper+%0ACrop+Intelligence+for+Pakistan&description=1&font=Source+Code+Pro&forks=1&name=1&pattern=Solid&pulls=1&stargazers=1&theme=Auto)
+# Crop Yield Predictor
 
-This Final Year Project, submitted to IBA Karachi, is a Pakistan-specific initiative aimed at empowering agricultural stakeholders, researchers, and policymakers with data-driven insights. The system uses multispectral satellite imagery and comparative machine learning models to predict crop yield which addresses the gap of open-source, localized agricultural intelligence in the country.
+[![CI](https://github.com/Muddasirr/crop-yield-predictor/actions/workflows/ci.yml/badge.svg)](https://github.com/Muddasirr/crop-yield-predictor/actions/workflows/ci.yml)
 
-An additional feature is its end-to-end integration of an LLM-based chatbot, allowing users to interact with the system in natural language. This makes complex yield data and predictions accessible even to non-technical users, enabling better planning, resource allocation, and agricultural decision-making in Pakistan.
+Crop yield estimates for Pakistani farmland from satellite imagery. Farmers, researchers and planners draw a field on a map, get a predicted yield in kg/ha, and can ask an agriculture chatbot about it in plain language. Final-year project at IBA Karachi.
 
-## Documentation
+**Live:** https://satellite-based-crop-yield-predictor.vercel.app
 
-- [Software Requirements Specification](https://www.overleaf.com/read/wjrczkthrrpc#1c0eb4)
-- [System Design](https://www.overleaf.com/read/hnnxdkxhwyjt#e40bdf)
+> **Note:** on the live site, adding a new field fails, because the prediction model service isn't deployed (see [Limitations](#limitations-and-roadmap)). Browsing, charts, notes, weather and the chatbot work.
 
+> **TODO(Muddasir):** add `docs/map.png`, a screenshot of the map with a drawn field and its predicted yield.
 
-## 🧠 Model Overview
-We developed a satellite-based crop yield prediction system using publicly available Landsat imagery, tailored specifically for Pakistan's agricultural landscape.
+## Why we built it
 
-- Region Focus: Division-wise areas across Pakistan
+There was no open, localized crop-yield model for Pakistan. Landsat imagery is free and covers the whole country every 16 days, so a model that reads crop health from it can give field-level estimates during the growing season.
 
-- Temporal Coverage: Multi-year imagery during the crop growing season
+## Features
 
-- Data Source: Landsat bands — especially Band 4 (Red) and Band 5 (Near-Infrared) — known for their value in vegetation analysis
+- **Draw your field:** draw a polygon on a Mapbox map. The app reverse-geocodes the location and stores the field with its area and predicted yield.
+- **Yield prediction:** a CNN trained on Landsat red and near-infrared bands with district-level yield data (see the model section below).
+- **Agriculture chatbot:** ask questions in natural language (Groq, `gemma2-9b-it`). It refuses topics outside agriculture.
+- **Dashboard:** charts across your fields, per-field notes, and a weather forecast for the field's location.
+- **Accounts:** sign-up and login, with users stored in Supabase and passwords hashed with bcrypt.
 
-### 🔧 Technical Approach
-- We extracted relevant infrared and near-infrared data to assess crop health and growth.
+## Architecture
 
-- Each sample combined geographic and actual yield data (in kg/ha), forming a rich dataset for training.
-
-- A custom Convolutional Neural Network (CNN) was trained on this data to map satellite features to crop yield.
-
-- Typical yield values ranged between 2000–2500 kg per hectare.
-
-### 🏗️ Model Architecture
-
-Our crop yield prediction model uses a **VGG-inspired Convolutional Neural Network (CNN)** optimized for regression tasks on satellite imagery:
-
-- **11 convolutional layers** organized into four sequential blocks  
-- Each block uses the structure:  
-  `3×3 Conv → BatchNorm → ReLU → Dropout`
-
-- **Downsampling** is achieved via **stride‑2 convolutions** instead of max-pooling at the end of Blocks 1 to 3  
-- **Block 4** increases feature depth to **1024 channels** without further spatial downsampling  
-- Output from the final conv layer is a feature map of **1024×16×16**, which is **flattened**  
-- Passed through a **2048-unit fully connected layer**  
-- Ends with a **single linear output neuron** for regression (predicting continuous crop yield)
-
-This architecture was chosen for its balance of **depth, parameter efficiency, and spatial awareness**, making it well-suited for geospatial imagery and yield prediction.
-
-### 🎯 Performance
-- Achieved Root Mean Square Error (RMSE) of just 11%, reflecting strong prediction accuracy.
-
-- This allows for timely, scalable, and accurate yield forecasting, aiding better agricultural planning, policy-making, and resource allocation.
-
-
-
-
-## Deployment
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-
+```mermaid
+flowchart LR
+    user([User]) --> web["Next.js app<br/>Mapbox GL · MUI · charts"]
+    web --> api["Next.js API routes<br/>/api/fields · /api/notes · /api/chat · /api/weather"]
+    api --> supa[(Supabase<br/>Postgres)]
+    api --> model["Prediction service<br/>FastAPI + CNN<br/>(not in this repo)"]
+    api --> groq[Groq LLM]
+    api --> ow[OpenWeather]
 ```
 
-Open http://localhost:3000 with your browser to see the result.
+### The model
 
-You can start editing the page by modifying app/page.js. The page auto-updates as you edit the file.
+- **Data:** multi-year Landsat imagery over the growing season, division by division across Pakistan, mainly Band 4 (red) and Band 5 (near-infrared), paired with recorded yields in kg/ha (typically 2,000–2,500 kg/ha).
+- **Network:** a VGG-style CNN for regression: 11 convolutional layers in four blocks (`3×3 conv → BatchNorm → ReLU → Dropout`), stride-2 convolutions instead of max-pooling, a 1024×16×16 final feature map, a 2,048-unit dense layer and one linear output.
+- **Result:** RMSE of 11% on held-out data.
+- **Docs:** [Software Requirements Specification](https://www.overleaf.com/read/wjrczkthrrpc#1c0eb4) · [System Design](https://www.overleaf.com/read/hnnxdkxhwyjt#e40bdf)
 
-This project uses next/font to automatically optimize and load Geist, a new font family for Vercel.
+## Getting started
 
-## Authors
+**Prerequisites:** Node 20, a Supabase project, and a Mapbox token. The chatbot and weather need Groq and OpenWeather keys.
+
+```bash
+npm install
+cp .env.example .env.local     # fill in the values below
+npm run dev                    # http://localhost:3000
+```
+
+| Variable | Used for |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Database |
+| `NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN` | Map and reverse geocoding |
+| `GROQ_API_KEY` | Chatbot (server-side) |
+| `OPENWEATHER_API_KEY` | Weather (server-side) |
+
+Check it builds with `npm run build`; CI runs the same build on every push and PR.
+
+## Challenges and what we learned
+
+- **Keep API keys on the server.** The first version called OpenWeather from the browser with the key in the code. Weather now goes through `/api/weather`, so no key reaches the client.
+- TODO(Muddasir): 2–3 real lessons from the model work, for example why red and near-infrared, why stride-2 convolutions instead of pooling, how you matched satellite tiles to yield records, and what your own part in the team was. Only include what you actually found.
+
+## Limitations and roadmap
+
+- **The prediction service isn't deployed.** `src/pages/api/fields/createfield.js` posts to a hard-coded local-network address (`http://192.168.5.104:8000/predict`), so new fields can't get predictions on the live site, and the model code isn't in this repo. Next step: add the FastAPI model service, deploy it, and read its URL from an env var.
+- Predictions are made for 2024 only (the year is hard-coded).
+- `requirements.txt` is a full `pip freeze` of a development environment saved in UTF-16, so `pip install -r` fails on most systems. It should be replaced with the model service's real dependencies.
+- There are no automated tests yet. CI only checks that the app builds.
+
+## Team
 
 - [Muddasir Rizwan](https://github.com/Muddasirr)
 - [Muhammad Hadi](https://github.com/Theycallmeinsane)
 - [Ahmed Raza](https://github.com/Ahmeddraaza)
 - [Moeen Haider](https://github.com/MoeenH)
-- [Hasan Atiq](https://github.com)
+- Hasan Atiq
 
+## License
 
-
+TODO(Muddasir): agree a license with your teammates before adding one. Until then, the code is all rights reserved by its authors.
