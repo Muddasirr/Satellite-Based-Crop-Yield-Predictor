@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Muddasirr/crop-yield-predictor/actions/workflows/ci.yml/badge.svg)](https://github.com/Muddasirr/crop-yield-predictor/actions/workflows/ci.yml)
 
-Crop yield estimates for Pakistani farmland from satellite imagery. Farmers, researchers and planners draw a field on a map, get a predicted yield in kg/ha, and can ask an agriculture chatbot about it in plain language. Final-year project at IBA Karachi.
+Crop yield estimates for Pakistani farmland from satellite imagery. Farmers, researchers and planners draw a field on a map, get a predicted yield in kg/ha, and can ask an agriculture chatbot about it in plain language.
 
 **Live:** https://satellite-based-crop-yield-predictor.vercel.app
 
