@@ -4,7 +4,8 @@
 
 Crop yield estimates for Pakistani farmland from satellite imagery. Farmers, researchers and planners draw a field on a map, get a predicted yield in kg/ha, and can ask an agriculture chatbot about it in plain language.
 
-**Live:** https://satellite-based-crop-yield-predictor.vercel.app
+**Live:** https://satellite-based-crop-yield-predictor.vercel.app<br>
+**Project report:** [Satellite Based Crop Yield Predictor](https://ir.iba.edu.pk/fyp-bscs/25/) ([PDF](https://ir.iba.edu.pk/cgi/viewcontent.cgi?article=1024&context=fyp-bscs)), IBA Karachi institutional repository, 2025. Advised by Dr. Faisal Iradat (IBA), co-advised by Arbaz Khan (Folio3).
 
 > **Note:** on the live site, adding a new field fails, because the prediction model service isn't deployed (see [Limitations](#limitations-and-roadmap)). Browsing, charts, notes, weather and the chatbot work.
 
@@ -34,7 +35,7 @@ flowchart LR
 
 ### The model
 
-- **Data:** multi-year Landsat imagery over the growing season, division by division across Pakistan, mainly Band 4 (red) and Band 5 (near-infrared), paired with recorded yields in kg/ha (typically 2,000–2,500 kg/ha).
+- **Data:** multi-year Landsat and Sentinel-2 imagery over the growing season across Pakistan, mainly the red (Landsat Band 4) and near-infrared (Band 5) bands, paired with historical provincial yields from AMIS in kg/ha (typically 2,000–2,500 kg/ha).
 - **Network:** a VGG-style CNN for regression: 11 convolutional layers in four blocks (`3×3 conv → BatchNorm → ReLU → Dropout`), stride-2 convolutions instead of max-pooling, a 1024×16×16 final feature map, a 2,048-unit dense layer and one linear output.
 - **Result:** RMSE of 11% on held-out data.
 - **Docs:** [Software Requirements Specification](https://www.overleaf.com/read/wjrczkthrrpc#1c0eb4) · [System Design](https://www.overleaf.com/read/hnnxdkxhwyjt#e40bdf)
@@ -75,7 +76,7 @@ Check it builds with `npm run build`; CI runs the same build on every push and P
 - [Muhammad Hadi](https://github.com/Theycallmeinsane)
 - [Ahmed Raza](https://github.com/Ahmeddraaza)
 - [Moeen Haider](https://github.com/MoeenH)
-- Hasan Atiq
+- Hassan Atiq
 
 ## License
 
