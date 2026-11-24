@@ -8,8 +8,6 @@ Crop yield estimates for Pakistani farmland from satellite imagery. Farmers, res
 
 > **Note:** on the live site, adding a new field fails, because the prediction model service isn't deployed (see [Limitations](#limitations-and-roadmap)). Browsing, charts, notes, weather and the chatbot work.
 
-> **TODO(Muddasir):** add `docs/map.png`, a screenshot of the map with a drawn field and its predicted yield.
-
 ## Why we built it
 
 There was no open, localized crop-yield model for Pakistan. Landsat imagery is free and covers the whole country every 16 days, so a model that reads crop health from it can give field-level estimates during the growing season.
@@ -63,7 +61,6 @@ Check it builds with `npm run build`; CI runs the same build on every push and P
 ## Challenges and what we learned
 
 - **Keep API keys on the server.** The first version called OpenWeather from the browser with the key in the code. Weather now goes through `/api/weather`, so no key reaches the client.
-- TODO(Muddasir): 2–3 real lessons from the model work, for example why red and near-infrared, why stride-2 convolutions instead of pooling, how you matched satellite tiles to yield records, and what your own part in the team was. Only include what you actually found.
 
 ## Limitations and roadmap
 
@@ -82,4 +79,4 @@ Check it builds with `npm run build`; CI runs the same build on every push and P
 
 ## License
 
-TODO(Muddasir): agree a license with your teammates before adding one. Until then, the code is all rights reserved by its authors.
+All rights reserved by the authors listed above.
